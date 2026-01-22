@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>➕ Français – Louise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .quiz-box {
+            background: white;
+            padding: 25px;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+/* Navigation fixe à gauche */
+.side-nav {
+    position: fixed;      /* reste fixe quand on scroll */
+    top: 50px;            /* décale du haut */
+    left: 10px;           /* à gauche */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;            /* espace entre les boutons */
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    font-size: 14px;      /* plus petit */
+    z-index: 1000;        /* toujours au-dessus du contenu */
+}
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="Louise.html">⬅ Retour aux thèmes</a>
+    <a href="Alice.html">Alice</a>
+    <a href="Famille.html">Famille</a>
+</div>
+
+
+    <h1>➕ Français – Louise</h1>
+
+  <!-- Progression texte et barre -->
+  <p id="progressionTexte"></p>
+  <div style="background:#ddd; border-radius:10px; overflow:hidden;">
+      <div id="barre" style="height:15px; width:0%; background:#4CAF50;"></div>
+  </div>
+
+
+    <div class="quiz-box">
+        <h2 id="question"></h2>
+	<img id="image" style="max-width:100%; display:none; margin:15px 0;">
+        <div id="reponses"></div>
+    	<p id="feedback" style="font-size:18px; font-weight:bold;"></p>
+
+    <button id="suivant" style="display:none;" onclick="questionSuivante()">    
+        ➡️ Question suivante
+    </button>
+
+    </div>
+
+<script>
+    // 1️⃣ Pool de toutes les questions
+
+const toutesLesQuestions = [
+
+  {"question":"Qui était le premier président de la France ?","reponses":["Charles de Gaulle","Napoléon Bonaparte","Louis XIV"],"bonneReponse":0},
+  {"question":"Qui a découvert l'Amérique ?","reponses":["Christophe Colomb","Marco Polo","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a construit les pyramides ?","reponses":["Les Égyptiens","Les Romains","Les Grecs"],"bonneReponse":0},
+  {"question":"Qui était une héroïne française célèbre ?","reponses":["Jeanne d'Arc","Marie Curie","Catherine de Médicis"],"bonneReponse":0},
+  {"question":"Quel bateau a traversé l'Atlantique en 1620 ?","reponses":["Le Mayflower","Le Titanic","La Santa Maria"],"bonneReponse":0},
+  {"question":"Qui a été le roi de France pendant la Révolution ?","reponses":["Louis XVI","Louis XIV","Napoléon"],"bonneReponse":0},
+  {"question":"Qui a été le premier homme sur la Lune ?","reponses":["Neil Armstrong","Buzz Aldrin","Yuri Gagarin"],"bonneReponse":0},
+  {"question":"Qui a inventé l'imprimerie ?","reponses":["Gutenberg","Edison","Galilée"],"bonneReponse":0},
+  {"question":"Qui était Napoléon Bonaparte ?","reponses":["Empereur de France","Roi d'Angleterre","Président des États-Unis"],"bonneReponse":0},
+  {"question":"Qui a peint la Joconde ?","reponses":["Léonard de Vinci","Michel-Ange","Raphaël"],"bonneReponse":0},
+  {"question":"Qui a découvert l’électricité ?","reponses":["Benjamin Franklin","Thomas Edison","Nikola Tesla"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre explorateur italien ?","reponses":["Marco Polo","Christophe Colomb","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a été la reine de France pendant la Révolution ?","reponses":["Marie-Antoinette","Joan d'Arc","Catherine de Médicis"],"bonneReponse":0},
+  {"question":"Qui a été un pharaon célèbre d'Égypte ?","reponses":["Toutankhamon","Cléopâtre","Ramsès"],"bonneReponse":0},
+  {"question":"Qui a construit la Grande Muraille de Chine ?","reponses":["Les Chinois","Les Romains","Les Grecs"],"bonneReponse":0},
+  {"question":"Qui a été le premier empereur de Rome ?","reponses":["Auguste","Jules César","Néron"],"bonneReponse":0},
+  {"question":"Qui a écrit des contes célèbres ?","reponses":["Les frères Grimm","Shakespeare","Homère"],"bonneReponse":0},
+  {"question":"Qui a découvert la gravité ?","reponses":["Isaac Newton","Albert Einstein","Galilée"],"bonneReponse":0},
+  {"question":"Qui a inventé le téléphone ?","reponses":["Alexander Graham Bell","Thomas Edison","Nikola Tesla"],"bonneReponse":0},
+  {"question":"Qui a peint le plafond de la chapelle Sixtine ?","reponses":["Michel-Ange","Léonard de Vinci","Raphaël"],"bonneReponse":0},
+  {"question":"Qui a traversé le Pacifique pour la première fois ?","reponses":["Ferdinand Magellan","Christophe Colomb","Marco Polo"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre roi d'Angleterre ?","reponses":["Henri VIII","George III","Édouard VII"],"bonneReponse":0},
+  {"question":"Qui a été une célèbre reine d'Angleterre ?","reponses":["Élisabeth I","Victoria","Marie I"],"bonneReponse":0},
+  {"question":"Qui a découvert l'Australie ?","reponses":["James Cook","Christophe Colomb","Marco Polo"],"bonneReponse":0},
+  {"question":"Qui a inventé la boussole ?","reponses":["Les Chinois","Les Romains","Les Grecs"],"bonneReponse":0},
+  {"question":"Qui a construit le Colisée ?","reponses":["Les Romains","Les Grecs","Les Égyptiens"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre empereur romain ?","reponses":["Jules César","Auguste","Néron"],"bonneReponse":0},
+  {"question":"Qui a été la première femme à voler seule ?","reponses":["Amelia Earhart","Marie Curie","Rosa Parks"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre pirate ?","reponses":["Barbe Noire","Capitaine Crochet","Jack Sparrow"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre chevalier ?","reponses":["Lancelot","Robin des Bois","Arthur"],"bonneReponse":0},
+  {"question":"Qui a été le premier président des États-Unis ?","reponses":["George Washington","Abraham Lincoln","Thomas Jefferson"],"bonneReponse":0},
+  {"question":"Qui a inventé l’ampoule électrique ?","reponses":["Thomas Edison","Benjamin Franklin","Nikola Tesla"],"bonneReponse":0},
+  {"question":"Qui a découvert le Brésil ?","reponses":["Pedro Álvares Cabral","Christophe Colomb","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a exploré l’Afrique ?","reponses":["David Livingstone","Christophe Colomb","Marco Polo"],"bonneReponse":0},
+  {"question":"Qui a été le premier empereur de Chine ?","reponses":["Qin Shi Huang","Confucius","Gengis Khan"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre explorateur de l’Inde ?","reponses":["Vasco de Gama","Christophe Colomb","Marco Polo"],"bonneReponse":0},
+  {"question":"Qui a découvert l’Antarctique ?","reponses":["Roald Amundsen","Robert Scott","Marco Polo"],"bonneReponse":0},
+  {"question":"Qui a été le roi de France Clovis ?","reponses":["Premier roi des Francs","Louis XIV","Charlemagne"],"bonneReponse":0},
+  {"question":"Qui a été Charlemagne ?","reponses":["Empereur des Francs","Roi d’Angleterre","Empereur de Rome"],"bonneReponse":0},
+  {"question":"Qui a construit Machu Picchu ?","reponses":["Les Incas","Les Aztèques","Les Mayas"],"bonneReponse":0},
+  {"question":"Qui a été Gengis Khan ?","reponses":["Chef mongol","Empereur chinois","Roi français"],"bonneReponse":0},
+  {"question":"Qui a été la célèbre reine d’Égypte ?","reponses":["Cléopâtre","Néfertiti","Hatchepsout"],"bonneReponse":0},
+  {"question":"Qui a peint La Nuit étoilée ?","reponses":["Vincent van Gogh","Léonard de Vinci","Michel-Ange"],"bonneReponse":0},
+  {"question":"Qui a été le premier astronaute dans l’espace ?","reponses":["Youri Gagarine","Neil Armstrong","Buzz Aldrin"],"bonneReponse":0},
+  {"question":"Qui a été la première femme scientifique célèbre ?","reponses":["Marie Curie","Rosalind Franklin","Ada Lovelace"],"bonneReponse":0},
+  {"question":"Qui a construit la Tour Eiffel ?","reponses":["Gustave Eiffel","Leonardo da Vinci","Michel-Ange"],"bonneReponse":0},
+  {"question":"Qui a été le roi Louis XIV ?","reponses":["Roi de France","Empereur d’Angleterre","Président"],"bonneReponse":0},
+  {"question":"Qui a été la première reine d’Angleterre célèbre ?","reponses":["Élisabeth I","Victoria","Marie I"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre inventeur ?","reponses":["Thomas Edison","Isaac Newton","Galilée"],"bonneReponse":0},
+  {"question":"Qui a découvert l’Amazonie ?","reponses":["Francisco de Orellana","Christophe Colomb","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre roi d’Angleterre Henri VIII ?","reponses":["Henri VIII","George III","Édouard VII"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre explorateur italien ?","reponses":["Marco Polo","Christophe Colomb","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a été le premier roi d’Angleterre ?","reponses":["Egbert","William le Conquérant","Henry"],"bonneReponse":0},
+  {"question":"Qui a inventé la bicyclette ?","reponses":["Karl Drais","Thomas Edison","Leonardo da Vinci"],"bonneReponse":0},
+  {"question":"Qui a été le premier roi d’Écosse ?","reponses":["Kenneth MacAlpin","William Wallace","Robert the Bruce"],"bonneReponse":0},
+  {"question":"Qui a découvert le Mississippi ?","reponses":["Hernando de Soto","Christophe Colomb","Marco Polo"],"bonneReponse":0},
+  {"question":"Qui a été le premier empereur de Rome ?","reponses":["Auguste","Jules César","Néron"],"bonneReponse":0},
+  {"question":"Qui a construit le Sphinx ?","reponses":["Les Égyptiens","Les Romains","Les Grecs"],"bonneReponse":0},
+  {"question":"Qui a inventé la machine à vapeur ?","reponses":["James Watt","Thomas Edison","Alexander Graham Bell"],"bonneReponse":0},
+  {"question":"Qui a découvert le Japon ?","reponses":["Marco Polo","Christophe Colomb","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a été un célèbre général romain ?","reponses":["Jules César","Auguste","Néron"],"bonneReponse":0},
+  {"question":"Qui a peint la Cène ?","reponses":["Léonard de Vinci","Michel-Ange","Raphaël"],"bonneReponse":0},
+  {"question":"Qui a découvert l’Alaska ?","reponses":["Vitus Bering","Christophe Colomb","James Cook"],"bonneReponse":0},
+  {"question":"Qui a été le premier pharaon d’Égypte ?","reponses":["Narmer","Toutankhamon","Ramsès"],"bonneReponse":0},
+  {"question":"Qui a écrit les fables célèbres ?","reponses":["Ésope","Shakespeare","Homère"],"bonneReponse":0},
+  {"question":"Qui a découvert la gravité ?","reponses":["Isaac Newton","Albert Einstein","Galilée"],"bonneReponse":0},
+  {"question":"Qui a découvert le Brésil ?","reponses":["Pedro Álvares Cabral","Christophe Colomb","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a traversé l’Atlantique pour la première fois ?","reponses":["Christophe Colomb","Marco Polo","Vasco de Gama"],"bonneReponse":0},
+  {"question":"Qui a été la célèbre héroïne Jeanne d’Arc ?","reponses":["Héroïne française","Reine d’Angleterre","Scientifique"],"bonneReponse":0},
+  {"question":"Qui a été Napoléon Bonaparte ?","reponses":["Empereur de France","Roi d’Angleterre","Président des États-Unis"],"bonneReponse":0},
+  {"question":"Qui a inventé l’ampoule électrique ?","reponses":["Thomas Edison","Benjamin Franklin","Nikola Tesla"],"bonneReponse":0},
+  {"question":"Qui a été le roi Clovis ?","reponses":["Premier roi des Francs","Louis XIV","Charlemagne"],"bonneReponse":0},
+  {"question":"Qui a été Charlemagne ?","reponses":["Empereur des Francs","Roi d’Angleterre","Empereur de Rome"],"bonneReponse":0},
+  {"question":"Qui a construit Machu Picchu ?","reponses":["Les Incas","Les Aztèques","Les Mayas"],"bonneReponse":0},
+  {"question":"Qui a été Gengis Khan ?","reponses":["Chef mongol","Empereur chinois","Roi français"],"bonneReponse":0},
+  {"question":"Qui a été la célèbre reine Cléopâtre ?","reponses":["Reine d’Égypte","Néfertiti","Hatchepsout"],"bonneReponse":0},
+  {"question":"Qui a été le premier empereur de Chine ?","reponses":["Qin Shi Huang","Confucius","Gengis Khan"],"bonneReponse":0},
+  {"question":"Qui a été la première femme scientifique célèbre ?","reponses":["Marie Curie","Rosalind Franklin","Ada Lovelace"],"bonneReponse":0},
+  {"question":"Qui a construit la Tour Eiffel ?","reponses":["Gustave Eiffel","Leonardo da Vinci","Michel-Ange"],"bonneReponse":0},
+  {"question":"Qui a été le roi Louis XIV ?","reponses":["Roi de France","Empereur d’Angleterre","Président"],"bonneReponse":0},
+  {"question":"Qui a été le premier président de la France ?","reponses":["Charles de Gaulle","Napoléon Bonaparte","Louis XIV"],"bonneReponse":0}
+];
+
+    // 2️⃣ Tirer 10 questions aléatoires
+
+    function tirer10Questions() {
+      const copie = [...toutesLesQuestions];
+      for (let i = copie.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copie[i], copie[j]] = [copie[j], copie[i]];
+      }
+      return copie.slice(0, 10);
+    }
+
+    let questions = tirer10Questions();
+    let indexQuestion = 0;
+    let score = 0;
+
+    // 3️⃣ Afficher la question
+    function afficherQuestion() {
+      const q = questions[indexQuestion];
+
+      document.getElementById("question").textContent = q.question;
+      document.getElementById("progressionTexte").textContent =
+        `Question ${indexQuestion + 1} sur ${questions.length}`;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("suivant").style.display = "none";
+
+    const zoneReponses = document.getElementById("reponses");
+    zoneReponses.innerHTML = "";
+
+    // Mélanger les réponses
+    const reponsesMelangees = q.reponses
+        .map((rep, index) => ({ texte: rep, indexOriginal: index }))
+        .sort(() => Math.random() - 0.5); // tri aléatoire
+
+    reponsesMelangees.forEach(rep => {
+        const bouton = document.createElement("button");
+        bouton.textContent = rep.texte;
+        bouton.onclick = () => verifierReponse(rep.indexOriginal);
+        zoneReponses.appendChild(bouton);
+    });
+
+      // Barre de progression
+      document.getElementById("barre").style.width =
+        ((indexQuestion + 1) / questions.length * 100) + "%";
+    }
+
+ 
+
+    function verifierReponse(indexChoisi) {
+      const q = questions[indexQuestion];
+      const feedback = document.getElementById("feedback");
+      const boutonSuivant = document.getElementById("suivant");
+
+      if (indexChoisi === q.bonneReponse) {
+        score++;
+        feedback.textContent = "✅ Bonne réponse !";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = `❌ Mauvaise réponse. La bonne réponse était : ${q.reponses[q.bonneReponse]}`;
+        feedback.style.color = "red";
+      }
+
+      document.querySelectorAll("#reponses button").forEach(b => b.disabled = true);
+      boutonSuivant.style.display = "block";
+    }
+
+    // 5️⃣ Question suivante
+function questionSuivante() {
+    indexQuestion++;
+    if (indexQuestion < questions.length) {
+        afficherQuestion();
+    } else {
+        afficherResultat();
+    }
+}
+
+
+    // 6️⃣ Afficher le résultat
+    function afficherResultat() {
+      const meilleurScore = localStorage.getItem("meilleurScore") || 0;
+      if (score > meilleurScore) localStorage.setItem("meilleurScore", score);
+
+      document.querySelector(".quiz-box").innerHTML = `
+        <h2>🎉 Fin du quiz !</h2>
+        <p>Score : ${score} / ${questions.length}</p>
+        <p>Meilleur score : ${Math.max(score, meilleurScore)} / ${questions.length}</p>
+        <a href="Louise.html">⬅ Retour aux thèmes</a><br><br>
+        <a href="index.html">🏠 Accueil</a><br><br>
+        <button id="rejouerBtn">🔄 Rejouer</button>
+      `;
+
+      document.getElementById("rejouerBtn").addEventListener("click", rejouerQuiz);
+    }
+
+    // 7️⃣ Rejouer
+    function rejouerQuiz() {
+      indexQuestion = 0;
+      score = 0;
+      questions = tirer10Questions(); // tirer un nouveau lot
+      afficherQuestion();
+    }
+
+    // 8️⃣ Initialisation
+    afficherQuestion();
+  </script>
+</body>
+</html>

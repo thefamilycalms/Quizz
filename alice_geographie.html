@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>➕ Français – Louise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .quiz-box {
+            background: white;
+            padding: 25px;
+            max-width: 600px;
+            margin: auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+/* Navigation fixe à gauche */
+.side-nav {
+    position: fixed;      /* reste fixe quand on scroll */
+    top: 50px;            /* décale du haut */
+    left: 10px;           /* à gauche */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;            /* espace entre les boutons */
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    font-size: 14px;      /* plus petit */
+    z-index: 1000;        /* toujours au-dessus du contenu */
+}
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+
+
+
+    </style>
+</head>
+<body>
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="Louise.html">⬅ Retour aux thèmes</a>
+    <a href="Alice.html">Alice</a>
+    <a href="Famille.html">Famille</a>
+</div>
+
+
+    <h1>➕ Français – Louise</h1>
+
+  <!-- Progression texte et barre -->
+  <p id="progressionTexte"></p>
+  <div style="background:#ddd; border-radius:10px; overflow:hidden;">
+      <div id="barre" style="height:15px; width:0%; background:#4CAF50;"></div>
+  </div>
+
+
+    <div class="quiz-box">
+        <h2 id="question"></h2>
+	<img id="image" style="max-width:100%; display:none; margin:15px 0;">
+        <div id="reponses"></div>
+    	<p id="feedback" style="font-size:18px; font-weight:bold;"></p>
+
+    <button id="suivant" style="display:none;" onclick="questionSuivante()">    
+        ➡️ Question suivante
+    </button>
+
+    </div>
+
+<script>
+    // 1️⃣ Pool de toutes les questions
+
+const toutesLesQuestions = [
+
+  {"question":"Quel est le plus grand océan du monde ?","reponses":["Océan Pacifique","Océan Atlantique","Océan Indien"],"bonneReponse":0},
+  {"question":"Quel est le continent où vit le plus de personnes ?","reponses":["Asie","Europe","Afrique"],"bonneReponse":0},
+  {"question":"Quel est le plus grand pays du monde ?","reponses":["Russie","Chine","États-Unis"],"bonneReponse":0},
+  {"question":"Quel est le plus petit continent ?","reponses":["Océanie","Europe","Antarctique"],"bonneReponse":0},
+  {"question":"Dans quel pays se trouve la Tour Eiffel ?","reponses":["France","Italie","Angleterre"],"bonneReponse":0},
+  {"question":"Quel est le plus long fleuve du monde ?","reponses":["Nil","Amazon","Mississippi"],"bonneReponse":0},
+  {"question":"Quel est le plus grand désert du monde ?","reponses":["Sahara","Gobi","Kalahari"],"bonneReponse":0},
+  {"question":"Quel pays a le drapeau rouge avec une étoile jaune ?","reponses":["Vietnam","Chine","Japon"],"bonneReponse":0},
+  {"question":"Quel est le pays le plus peuplé ?","reponses":["Chine","Inde","États-Unis"],"bonneReponse":0},
+  {"question":"Où se trouve le mont Everest ?","reponses":["Népal","Chine","Inde"],"bonneReponse":0},
+  {"question":"Quel est le plus grand lac du monde ?","reponses":["Mer Caspienne","Lac Supérieur","Lac Victoria"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de la France ?","reponses":["Paris","Lyon","Marseille"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de l'Italie ?","reponses":["Rome","Milan","Venise"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de l'Allemagne ?","reponses":["Berlin","Munich","Hambourg"],"bonneReponse":0},
+  {"question":"Quel est le plus grand pays d'Afrique ?","reponses":["Algérie","Nigeria","Égypte"],"bonneReponse":0},
+  {"question":"Quel pays est en forme de botte ?","reponses":["Italie","Espagne","Portugal"],"bonneReponse":0},
+  {"question":"Quel est le plus haut volcan du monde ?","reponses":["Ojos del Salado","Kilimandjaro","Etna"],"bonneReponse":0},
+  {"question":"Quel fleuve traverse l'Égypte ?","reponses":["Nil","Mississippi","Amazon"],"bonneReponse":0},
+  {"question":"Quel est le plus grand pays d'Amérique du Sud ?","reponses":["Brésil","Argentine","Chili"],"bonneReponse":0},
+  {"question":"Quel pays a une feuille d'érable sur son drapeau ?","reponses":["Canada","Australie","Japon"],"bonneReponse":0},
+  {"question":"Quel est le plus long fleuve d'Afrique ?","reponses":["Nil","Congo","Zambèze"],"bonneReponse":0},
+  {"question":"Quel pays est composé de plusieurs îles et se trouve en Océanie ?","reponses":["Australie","Japon","Inde"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de l'Espagne ?","reponses":["Madrid","Barcelone","Valence"],"bonneReponse":0},
+  {"question":"Quelle est la capitale du Royaume-Uni ?","reponses":["Londres","Manchester","Liverpool"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de l'Égypte ?","reponses":["Le Caire","Alexandrie","Gizeh"],"bonneReponse":0},
+  {"question":"Quel est le plus grand désert d'Afrique ?","reponses":["Sahara","Kalahari","Gobi"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les kangourous ?","reponses":["Australie","Nouvelle-Zélande","Afrique du Sud"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour la Tour de Pise ?","reponses":["Italie","France","Espagne"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les pyramides ?","reponses":["Égypte","Mexique","Grèce"],"bonneReponse":0},
+  {"question":"Quel pays a une grande muraille ?","reponses":["Chine","Japon","Corée"],"bonneReponse":0},
+  {"question":"Quel est le plus grand océan de l'Afrique ?","reponses":["Océan Atlantique","Océan Indien","Océan Pacifique"],"bonneReponse":0},
+  {"question":"Quel pays a un kangourou comme symbole ?","reponses":["Australie","Nouvelle-Zélande","Canada"],"bonneReponse":0},
+  {"question":"Quel pays a un drapeau rouge et blanc avec une croix ?","reponses":["Suisse","Danemark","Norvège"],"bonneReponse":0},
+  {"question":"Quel est le plus long fleuve d'Asie ?","reponses":["Yangtsé","Gange","Mékong"],"bonneReponse":0},
+  {"question":"Quel pays est connu pour le Taj Mahal ?","reponses":["Inde","Pakistan","Bangladesh"],"bonneReponse":0},
+  {"question":"Quel pays a un kangourou sur sa monnaie ?","reponses":["Australie","Nouvelle-Zélande","Canada"],"bonneReponse":0},
+  {"question":"Quel pays a une grande barrière de corail ?","reponses":["Australie","Indonésie","Philippines"],"bonneReponse":0},
+  {"question":"Quel est le plus grand pays d'Amérique du Nord ?","reponses":["Canada","États-Unis","Mexique"],"bonneReponse":0},
+  {"question":"Quel est le plus petit pays du monde ?","reponses":["Vatican","Monaco","San Marin"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les gondoles ?","reponses":["Italie","France","Espagne"],"bonneReponse":0},
+  {"question":"Quelle est la capitale du Japon ?","reponses":["Tokyo","Kyoto","Osaka"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de la Chine ?","reponses":["Pékin","Shanghai","Hong Kong"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de l'Australie ?","reponses":["Canberra","Sydney","Melbourne"],"bonneReponse":0},
+  {"question":"Quel pays a la Statue de la Liberté ?","reponses":["États-Unis","France","Italie"],"bonneReponse":0},
+  {"question":"Quel est le plus grand lac d'Afrique ?","reponses":["Victoria","Tchad","Tanganika"],"bonneReponse":0},
+  {"question":"Quel est le plus grand pays d'Europe ?","reponses":["Russie","France","Allemagne"],"bonneReponse":0},
+  {"question":"Quel est le plus haut sommet du monde ?","reponses":["Mont Everest","Kilimandjaro","Mont Blanc"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour le mont Fuji ?","reponses":["Japon","Chine","Corée"],"bonneReponse":0},
+  {"question":"Quel est le plus long fleuve d'Europe ?","reponses":["Volga","Danube","Rhône"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Rio de Janeiro ?","reponses":["Brésil","Argentine","Mexique"],"bonneReponse":0},
+  {"question":"Quel pays a une grande muraille ?","reponses":["Chine","Japon","Corée"],"bonneReponse":0},
+  {"question":"Quel pays est connu pour les tulipes ?","reponses":["Pays-Bas","France","Belgique"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les pyramides de Gizeh ?","reponses":["Égypte","Mexique","Grèce"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Londres ?","reponses":["Royaume-Uni","France","États-Unis"],"bonneReponse":0},
+  {"question":"Quel pays a le plus de volcans ?","reponses":["Indonésie","Italie","Japon"],"bonneReponse":0},
+  {"question":"Quel pays est connu pour les kangourous et les koalas ?","reponses":["Australie","Nouvelle-Zélande","Canada"],"bonneReponse":0},
+  {"question":"Quel pays a le drapeau rouge, blanc et bleu avec des étoiles ?","reponses":["États-Unis","France","Royaume-Uni"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les pyramides mayas ?","reponses":["Mexique","Égypte","Guatemala"],"bonneReponse":0},
+  {"question":"Quel est le plus grand pays d'Amérique centrale ?","reponses":["Mexique","Costa Rica","Panama"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour le kangourou et l’opéra ?","reponses":["Australie","Nouvelle-Zélande","Canada"],"bonneReponse":0},
+  {"question":"Quel est le plus long fleuve d’Amérique du Sud ?","reponses":["Amazon","Orénoque","Paraná"],"bonneReponse":0},
+  {"question":"Quelle est la capitale de l’Argentine ?","reponses":["Buenos Aires","Cordoba","Rosario"],"bonneReponse":0},
+  {"question":"Quelle est la capitale du Mexique ?","reponses":["Mexico","Guadalajara","Monterrey"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Sydney ?","reponses":["Australie","Nouvelle-Zélande","Canada"],"bonneReponse":0},
+  {"question":"Quel pays a le désert de Gobi ?","reponses":["Chine","Mongolie","Inde"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour la Tour de Pise ?","reponses":["Italie","France","Espagne"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour le mont Kilimandjaro ?","reponses":["Tanzanie","Kenya","Ouganda"],"bonneReponse":0},
+  {"question":"Quel pays a le fleuve Mississippi ?","reponses":["États-Unis","Canada","Brésil"],"bonneReponse":0},
+  {"question":"Quel pays a le fleuve Yangtsé ?","reponses":["Chine","Japon","Inde"],"bonneReponse":0},
+  {"question":"Quel pays a le fleuve Danube ?","reponses":["Allemagne","France","Italie"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les chutes du Niagara ?","reponses":["Canada","États-Unis","Brésil"],"bonneReponse":0},
+  {"question":"Quel pays a le plus de volcans actifs ?","reponses":["Indonésie","Japon","Italie"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour le Taj Mahal ?","reponses":["Inde","Pakistan","Bangladesh"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour le carnaval de Rio ?","reponses":["Brésil","Argentine","Mexique"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Vienne ?","reponses":["Autriche","Allemagne","Suisse"],"bonneReponse":0},
+  {"question":"Quel pays a le Mont Blanc ?","reponses":["France","Italie","Suisse"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les fjords ?","reponses":["Norvège","Suède","Finlande"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Bangkok ?","reponses":["Thaïlande","Vietnam","Indonésie"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les pyramides de Teotihuacan ?","reponses":["Mexique","Égypte","Guatemala"],"bonneReponse":0},
+  {"question":"Quel pays a le désert du Sahara ?","reponses":["Algérie","Égypte","Libye"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour le Kremlin ?","reponses":["Russie","Ukraine","Pologne"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Pékin ?","reponses":["Chine","Japon","Corée"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les châteaux de la Loire ?","reponses":["France","Allemagne","Italie"],"bonneReponse":0},
+  {"question":"Quel pays a le plus de volcans en activité ?","reponses":["Indonésie","Italie","Japon"],"bonneReponse":0},
+  {"question":"Quel pays a le plus grand nombre d’îles ?","reponses":["Indonésie","Philippines","Grèce"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Istanbul ?","reponses":["Turquie","Grèce","Bulgarie"],"bonneReponse":0},
+  {"question":"Quel pays a le mont Fuji ?","reponses":["Japon","Chine","Corée"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Lisbonne ?","reponses":["Portugal","Espagne","Italie"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Stockholm ?","reponses":["Suède","Norvège","Finlande"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les gondoles ?","reponses":["Italie","France","Espagne"],"bonneReponse":0},
+  {"question":"Quel pays a le plus long fleuve du monde ?","reponses":["Nil","Amazon","Yangtsé"],"bonneReponse":0},
+  {"question":"Quel pays est célèbre pour les tulipes ?","reponses":["Pays-Bas","France","Belgique"],"bonneReponse":0},
+  {"question":"Quel pays a le désert de Kalahari ?","reponses":["Botswana","Namibie","Afrique du Sud"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Vienne ?","reponses":["Autriche","Allemagne","Suisse"],"bonneReponse":0},
+  {"question":"Quel pays a le lac Titicaca ?","reponses":["Pérou","Bolivie","Chili"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Montréal ?","reponses":["Canada","États-Unis","France"],"bonneReponse":0},
+  {"question":"Quel pays a la ville de Sydney ?","reponses":["Australie","Nouvelle-Zélande","Canada"],"bonneReponse":0}
+];
+
+    // 2️⃣ Tirer 10 questions aléatoires
+
+    function tirer10Questions() {
+      const copie = [...toutesLesQuestions];
+      for (let i = copie.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copie[i], copie[j]] = [copie[j], copie[i]];
+      }
+      return copie.slice(0, 10);
+    }
+
+    let questions = tirer10Questions();
+    let indexQuestion = 0;
+    let score = 0;
+
+    // 3️⃣ Afficher la question
+    function afficherQuestion() {
+      const q = questions[indexQuestion];
+
+      document.getElementById("question").textContent = q.question;
+      document.getElementById("progressionTexte").textContent =
+        `Question ${indexQuestion + 1} sur ${questions.length}`;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("suivant").style.display = "none";
+
+    const zoneReponses = document.getElementById("reponses");
+    zoneReponses.innerHTML = "";
+
+    // Mélanger les réponses
+    const reponsesMelangees = q.reponses
+        .map((rep, index) => ({ texte: rep, indexOriginal: index }))
+        .sort(() => Math.random() - 0.5); // tri aléatoire
+
+    reponsesMelangees.forEach(rep => {
+        const bouton = document.createElement("button");
+        bouton.textContent = rep.texte;
+        bouton.onclick = () => verifierReponse(rep.indexOriginal);
+        zoneReponses.appendChild(bouton);
+    });
+
+      // Barre de progression
+      document.getElementById("barre").style.width =
+        ((indexQuestion + 1) / questions.length * 100) + "%";
+    }
+
+ 
+
+    function verifierReponse(indexChoisi) {
+      const q = questions[indexQuestion];
+      const feedback = document.getElementById("feedback");
+      const boutonSuivant = document.getElementById("suivant");
+
+      if (indexChoisi === q.bonneReponse) {
+        score++;
+        feedback.textContent = "✅ Bonne réponse !";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = `❌ Mauvaise réponse. La bonne réponse était : ${q.reponses[q.bonneReponse]}`;
+        feedback.style.color = "red";
+      }
+
+      document.querySelectorAll("#reponses button").forEach(b => b.disabled = true);
+      boutonSuivant.style.display = "block";
+    }
+
+    // 5️⃣ Question suivante
+function questionSuivante() {
+    indexQuestion++;
+    if (indexQuestion < questions.length) {
+        afficherQuestion();
+    } else {
+        afficherResultat();
+    }
+}
+
+
+    // 6️⃣ Afficher le résultat
+    function afficherResultat() {
+      const meilleurScore = localStorage.getItem("meilleurScore") || 0;
+      if (score > meilleurScore) localStorage.setItem("meilleurScore", score);
+
+      document.querySelector(".quiz-box").innerHTML = `
+        <h2>🎉 Fin du quiz !</h2>
+        <p>Score : ${score} / ${questions.length}</p>
+        <p>Meilleur score : ${Math.max(score, meilleurScore)} / ${questions.length}</p>
+        <a href="Louise.html">⬅ Retour aux thèmes</a><br><br>
+        <a href="index.html">🏠 Accueil</a><br><br>
+        <button id="rejouerBtn">🔄 Rejouer</button>
+      `;
+
+      document.getElementById("rejouerBtn").addEventListener("click", rejouerQuiz);
+    }
+
+    // 7️⃣ Rejouer
+    function rejouerQuiz() {
+      indexQuestion = 0;
+      score = 0;
+      questions = tirer10Questions(); // tirer un nouveau lot
+      afficherQuestion();
+    }
+
+    // 8️⃣ Initialisation
+    afficherQuestion();
+  </script>
+</body>
+</html>

@@ -2,57 +2,246 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz de Louise</title>
+    <title>➕ Français – Louise</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e8f5e9;
+            background-color: #f2f6ff;
             text-align: center;
-            padding: 40px;
+            padding: 30px;
         }
 
-        .menu {
+        .quiz-box {
             background: white;
-            padding: 30px;
-            max-width: 500px;
+            padding: 25px;
+            max-width: 600px;
             margin: auto;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        a {
+        button {
             display: block;
-            margin: 15px 0;
-            padding: 15px;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
             background-color: #4CAF50;
             color: white;
-            text-decoration: none;
-            font-size: 18px;
-            border-radius: 8px;
+            cursor: pointer;
         }
 
-        a:hover {
+        button:hover {
             background-color: #45a049;
         }
 
-        .retour {
-            margin-top: 25px;
-            background-color: #777;
-        }
+/* Navigation fixe à gauche */
+.side-nav {
+    position: fixed;      /* reste fixe quand on scroll */
+    top: 50px;            /* décale du haut */
+    left: 10px;           /* à gauche */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;            /* espace entre les boutons */
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    font-size: 14px;      /* plus petit */
+    z-index: 1000;        /* toujours au-dessus du contenu */
+}
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+
+
+
     </style>
 </head>
 <body>
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="Louise.html">⬅ Retour aux thèmes</a>
+    <a href="Alice.html">Alice</a>
+    <a href="Famille.html">Famille</a>
+</div>
 
-    <h1>👧 Quiz de Louise</h1>
-    <p>Choisis un thème :</p>
 
-    <div class="menu">
-        <a href="louise_math.html">➕ Mathématiques</a>
-        <a href="louise_geo.html">🌍 Géographie</a>
-        <a href="louise_histoire.html">📜 Histoire</a>
-        <a href="louise_sciences.html">🔬 Sciences</a>
+    <h1>➕ Français – Louise</h1>
 
-        <a href="index.html" class="retour">⬅ Retour à l'accueil</a>
+  <!-- Progression texte et barre -->
+  <p id="progressionTexte"></p>
+  <div style="background:#ddd; border-radius:10px; overflow:hidden;">
+      <div id="barre" style="height:15px; width:0%; background:#4CAF50;"></div>
+  </div>
+
+
+    <div class="quiz-box">
+        <h2 id="question"></h2>
+	<img id="image" style="max-width:100%; display:none; margin:15px 0;">
+        <div id="reponses"></div>
+    	<p id="feedback" style="font-size:18px; font-weight:bold;"></p>
+
+    <button id="suivant" style="display:none;" onclick="questionSuivante()">    
+        ➡️ Question suivante
+    </button>
+
     </div>
 
+<script>
+    // 1️⃣ Pool de toutes les questions
+
+const toutesLesQuestions = [
+
+  {"question":"Quel est le féminin de 'acteur' ?","reponses":["actrice","acteuse","actricee"],"bonneReponse":0},
+  {"question":"Quel est le pluriel de 'cheval' ?","reponses":["chevaux","chevals","chevauxs"],"bonneReponse":0},
+  {"question":"Quel mot est un verbe ?","reponses":["manger","beau","maison"],"bonneReponse":0},
+  {"question":"Quel mot est un nom ?","reponses":["chien","courir","vite"],"bonneReponse":0},
+  {"question":"Quel mot est un adjectif ?","reponses":["grand","chanter","chat"],"bonneReponse":0},
+  {"question":"Quelle est la bonne orthographe ?","reponses":["appel","apelle","apel"],"bonneReponse":0},
+  {"question":"Complète : Je ___ au parc. (aller)","reponses":["vais","va","allez"],"bonneReponse":0},
+  {"question":"Complète : Il ___ un livre. (lire)","reponses":["lit","lire","lis"],"bonneReponse":0},
+  {"question":"Quel mot est un pronom ?","reponses":["elle","chat","rouge"],"bonneReponse":0},
+  {"question":"Quel est le contraire de 'jour' ?","reponses":["nuit","matin","soir"],"bonneReponse":0},
+  {"question":"Quel est le synonyme de 'rapide' ?","reponses":["vite","lent","doux"],"bonneReponse":0},
+  {"question":"Quel mot complète : J’ai ___ bonbon.","reponses":["un","une","des"],"bonneReponse":0},
+  {"question":"Quel mot complète : Elle a ___ cheveux longs.","reponses":["les","le","la"],"bonneReponse":0},
+  {"question":"Quel mot est un adverbe ?","reponses":["vite","grand","maison"],"bonneReponse":0},
+  {"question":"Quel est le féminin de 'lion' ?","reponses":["lionne","lione","lionn"],"bonneReponse":0},
+  {"question":"Complète : Nous ___ contents. (être)","reponses":["sommes","est","sont"],"bonneReponse":0},
+  {"question":"Complète : Tu ___ à l’école. (aller)","reponses":["vas","va","allons"],"bonneReponse":0},
+  {"question":"Quel mot est un nom commun ?","reponses":["école","Paris","France"],"bonneReponse":0},
+  {"question":"Quel est le pluriel de 'jouet' ?","reponses":["jouets","joueaux","jouetses"],"bonneReponse":0},
+  {"question":"Quel mot est un verbe à l’infinitif ?","reponses":["chanter","chanté","chante"],"bonneReponse":0},
+  {"question":"Complète : Ils ___ partis en vacances. (être)","reponses":["sont","est","sommes"],"bonneReponse":0},
+  {"question":"Quel est le synonyme de 'grand' ?","reponses":["haut","petit","bas"],"bonneReponse":0},
+  {"question":"Complète : Je ___ une pomme. (manger)","reponses":["mange","manges","mangent"],"bonneReponse":0},
+  {"question":"Quel mot est un adjectif ?","reponses":["joli","chanter","maison"],"bonneReponse":0},
+  {"question":"Quel est le contraire de 'chaud' ?","reponses":["froid","tiède","brûlant"],"bonneReponse":0},
+  {"question":"Complète : Il ___ son travail. (finir)","reponses":["finit","finis","finissez"],"bonneReponse":0},
+  {"question":"Quel mot est un adverbe ?","reponses":["lentement","lent","lente"],"bonneReponse":0},
+  {"question":"Quel est le féminin de 'chat' ?","reponses":["chatte","chat","chate"],"bonneReponse":0},
+  {"question":"Quel mot est un nom propre ?","reponses":["Paris","ville","maison"],"bonneReponse":0},
+  {"question":"Complète : Vous ___ à l’école. (aller)","reponses":["allez","vas","va"],"bonneReponse":0}
+];
+
+    // 2️⃣ Tirer 10 questions aléatoires
+
+    function tirer10Questions() {
+      const copie = [...toutesLesQuestions];
+      for (let i = copie.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copie[i], copie[j]] = [copie[j], copie[i]];
+      }
+      return copie.slice(0, 10);
+    }
+
+    let questions = tirer10Questions();
+    let indexQuestion = 0;
+    let score = 0;
+
+    // 3️⃣ Afficher la question
+    function afficherQuestion() {
+      const q = questions[indexQuestion];
+
+      document.getElementById("question").textContent = q.question;
+      document.getElementById("progressionTexte").textContent =
+        `Question ${indexQuestion + 1} sur ${questions.length}`;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("suivant").style.display = "none";
+
+    const zoneReponses = document.getElementById("reponses");
+    zoneReponses.innerHTML = "";
+
+    // Mélanger les réponses
+    const reponsesMelangees = q.reponses
+        .map((rep, index) => ({ texte: rep, indexOriginal: index }))
+        .sort(() => Math.random() - 0.5); // tri aléatoire
+
+    reponsesMelangees.forEach(rep => {
+        const bouton = document.createElement("button");
+        bouton.textContent = rep.texte;
+        bouton.onclick = () => verifierReponse(rep.indexOriginal);
+        zoneReponses.appendChild(bouton);
+    });
+
+      // Barre de progression
+      document.getElementById("barre").style.width =
+        ((indexQuestion + 1) / questions.length * 100) + "%";
+    }
+
+ 
+
+    function verifierReponse(indexChoisi) {
+      const q = questions[indexQuestion];
+      const feedback = document.getElementById("feedback");
+      const boutonSuivant = document.getElementById("suivant");
+
+      if (indexChoisi === q.bonneReponse) {
+        score++;
+        feedback.textContent = "✅ Bonne réponse !";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = `❌ Mauvaise réponse. La bonne réponse était : ${q.reponses[q.bonneReponse]}`;
+        feedback.style.color = "red";
+      }
+
+      document.querySelectorAll("#reponses button").forEach(b => b.disabled = true);
+      boutonSuivant.style.display = "block";
+    }
+
+    // 5️⃣ Question suivante
+function questionSuivante() {
+    indexQuestion++;
+    if (indexQuestion < questions.length) {
+        afficherQuestion();
+    } else {
+        afficherResultat();
+    }
+}
+
+
+    // 6️⃣ Afficher le résultat
+    function afficherResultat() {
+      const meilleurScore = localStorage.getItem("meilleurScore") || 0;
+      if (score > meilleurScore) localStorage.setItem("meilleurScore", score);
+
+      document.querySelector(".quiz-box").innerHTML = `
+        <h2>🎉 Fin du quiz !</h2>
+        <p>Score : ${score} / ${questions.length}</p>
+        <p>Meilleur score : ${Math.max(score, meilleurScore)} / ${questions.length}</p>
+        <a href="Louise.html">⬅ Retour aux thèmes</a><br><br>
+        <a href="index.html">🏠 Accueil</a><br><br>
+        <button id="rejouerBtn">🔄 Rejouer</button>
+      `;
+
+      document.getElementById("rejouerBtn").addEventListener("click", rejouerQuiz);
+    }
+
+    // 7️⃣ Rejouer
+    function rejouerQuiz() {
+      indexQuestion = 0;
+      score = 0;
+      questions = tirer10Questions(); // tirer un nouveau lot
+      afficherQuestion();
+    }
+
+    // 8️⃣ Initialisation
+    afficherQuestion();
+  </script>
 </body>
 </html>
