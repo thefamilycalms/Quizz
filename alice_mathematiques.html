@@ -2,57 +2,336 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Quiz de Louise</title>
+    <title>➕ Mathématiques – Louise</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #e8f5e9;
+            background-color: #f2f6ff;
             text-align: center;
-            padding: 40px;
+            padding: 30px;
         }
 
-        .menu {
+        .quiz-box {
             background: white;
-            padding: 30px;
-            max-width: 500px;
+            padding: 25px;
+            max-width: 600px;
             margin: auto;
             border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
 
-        a {
+        button {
             display: block;
-            margin: 15px 0;
-            padding: 15px;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
             background-color: #4CAF50;
             color: white;
-            text-decoration: none;
-            font-size: 18px;
-            border-radius: 8px;
+            cursor: pointer;
         }
 
-        a:hover {
+        button:hover {
             background-color: #45a049;
         }
 
-        .retour {
-            margin-top: 25px;
-            background-color: #777;
-        }
+/* Navigation fixe à gauche */
+.side-nav {
+    position: fixed;      /* reste fixe quand on scroll */
+    top: 50px;            /* décale du haut */
+    left: 10px;           /* à gauche */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;            /* espace entre les boutons */
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    font-size: 14px;      /* plus petit */
+    z-index: 1000;        /* toujours au-dessus du contenu */
+}
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+
+
+
     </style>
 </head>
 <body>
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="Louise.html">⬅ Retour aux thèmes</a>
+    <a href="Alice.html">Alice</a>
+    <a href="Famille.html">Famille</a>
+</div>
 
-    <h1>👧 Quiz de Louise</h1>
-    <p>Choisis un thème :</p>
 
-    <div class="menu">
-        <a href="louise_math.html">➕ Mathématiques</a>
-        <a href="louise_geo.html">🌍 Géographie</a>
-        <a href="louise_histoire.html">📜 Histoire</a>
-        <a href="louise_sciences.html">🔬 Sciences</a>
+    <h1>➕ Mathématiques – Louise</h1>
 
-        <a href="index.html" class="retour">⬅ Retour à l'accueil</a>
+  <!-- Progression texte et barre -->
+  <p id="progressionTexte"></p>
+  <div style="background:#ddd; border-radius:10px; overflow:hidden;">
+      <div id="barre" style="height:15px; width:0%; background:#4CAF50;"></div>
+  </div>
+
+
+    <div class="quiz-box">
+        <h2 id="question"></h2>
+	<img id="image" style="max-width:100%; display:none; margin:15px 0;">
+        <div id="reponses"></div>
+    	<p id="feedback" style="font-size:18px; font-weight:bold;"></p>
+
+    <button id="suivant" style="display:none;" onclick="questionSuivante()">    
+        ➡️ Question suivante
+    </button>
+
     </div>
 
+<script>
+    // 1️⃣ Pool de toutes les questions
+
+const toutesLesQuestions = [
+
+  {"question":"0 + 1 = ?","reponses":["0","1","2"],"bonneReponse":1},
+  {"question":"0 + 2 = ?","reponses":["1","2","3"],"bonneReponse":1},
+  {"question":"0 + 3 = ?","reponses":["3","2","4"],"bonneReponse":0},
+  {"question":"0 + 4 = ?","reponses":["4","5","3"],"bonneReponse":0},
+  {"question":"0 + 5 = ?","reponses":["5","4","6"],"bonneReponse":0},
+  {"question":"0 + 6 = ?","reponses":["6","5","7"],"bonneReponse":0},
+  {"question":"0 + 7 = ?","reponses":["7","6","8"],"bonneReponse":0},
+  {"question":"0 + 8 = ?","reponses":["8","7","9"],"bonneReponse":0},
+  {"question":"0 + 9 = ?","reponses":["9","8","10"],"bonneReponse":0},
+  {"question":"0 + 10 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  
+  {"question":"1 + 1 = ?","reponses":["2","1","3"],"bonneReponse":0},
+  {"question":"1 + 2 = ?","reponses":["2","3","4"],"bonneReponse":1},
+  {"question":"1 + 3 = ?","reponses":["3","4","5"],"bonneReponse":1},
+  {"question":"1 + 4 = ?","reponses":["4","5","6"],"bonneReponse":1},
+  {"question":"1 + 5 = ?","reponses":["5","6","7"],"bonneReponse":1},
+  {"question":"1 + 6 = ?","reponses":["6","7","8"],"bonneReponse":1},
+  {"question":"1 + 7 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"1 + 8 = ?","reponses":["8","9","10"],"bonneReponse":1},
+  {"question":"1 + 9 = ?","reponses":["9","10","11"],"bonneReponse":1},
+  {"question":"1 + 10 = ?","reponses":["10","11","12"],"bonneReponse":1},
+
+  {"question":"2 + 1 = ?","reponses":["2","3","4"],"bonneReponse":1},
+  {"question":"2 + 2 = ?","reponses":["3","4","5"],"bonneReponse":1},
+  {"question":"2 + 3 = ?","reponses":["4","5","6"],"bonneReponse":1},
+  {"question":"2 + 4 = ?","reponses":["5","6","7"],"bonneReponse":1},
+  {"question":"2 + 5 = ?","reponses":["6","7","8"],"bonneReponse":1},
+  {"question":"2 + 6 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"2 + 7 = ?","reponses":["8","9","10"],"bonneReponse":0},
+  {"question":"2 + 8 = ?","reponses":["9","10","11"],"bonneReponse":0},
+  {"question":"2 + 9 = ?","reponses":["10","11","12"],"bonneReponse":0},
+  {"question":"2 + 10 = ?","reponses":["12","11","10"],"bonneReponse":0},
+
+  {"question":"3 + 1 = ?","reponses":["4","3","5"],"bonneReponse":0},
+  {"question":"3 + 2 = ?","reponses":["4","5","6"],"bonneReponse":1},
+  {"question":"3 + 3 = ?","reponses":["5","6","7"],"bonneReponse":1},
+  {"question":"3 + 4 = ?","reponses":["6","7","8"],"bonneReponse":1},
+  {"question":"3 + 5 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"3 + 6 = ?","reponses":["8","9","10"],"bonneReponse":1},
+  {"question":"3 + 7 = ?","reponses":["9","10","11"],"bonneReponse":0},
+  {"question":"3 + 8 = ?","reponses":["10","11","12"],"bonneReponse":0},
+  {"question":"3 + 9 = ?","reponses":["12","11","13"],"bonneReponse":1},
+  {"question":"3 + 10 = ?","reponses":["13","12","14"],"bonneReponse":0},
+
+  {"question":"4 + 1 = ?","reponses":["4","5","6"],"bonneReponse":1},
+  {"question":"4 + 2 = ?","reponses":["5","6","7"],"bonneReponse":1},
+  {"question":"4 + 3 = ?","reponses":["6","7","8"],"bonneReponse":1},
+  {"question":"4 + 4 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"4 + 5 = ?","reponses":["8","9","10"],"bonneReponse":0},
+  {"question":"4 + 6 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  {"question":"4 + 7 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"4 + 8 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"4 + 9 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"4 + 10 = ?","reponses":["14","13","15"],"bonneReponse":0},
+
+  {"question":"5 + 1 = ?","reponses":["5","6","7"],"bonneReponse":1},
+  {"question":"5 + 2 = ?","reponses":["6","7","8"],"bonneReponse":1},
+  {"question":"5 + 3 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"5 + 4 = ?","reponses":["8","9","10"],"bonneReponse":0},
+  {"question":"5 + 5 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  {"question":"5 + 6 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"5 + 7 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"5 + 8 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"5 + 9 = ?","reponses":["14","13","15"],"bonneReponse":0},
+  {"question":"5 + 10 = ?","reponses":["15","14","16"],"bonneReponse":0},
+
+  {"question":"6 + 1 = ?","reponses":["6","7","8"],"bonneReponse":1},
+  {"question":"6 + 2 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"6 + 3 = ?","reponses":["8","9","10"],"bonneReponse":1},
+  {"question":"6 + 4 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  {"question":"6 + 5 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"6 + 6 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"6 + 7 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"6 + 8 = ?","reponses":["14","13","15"],"bonneReponse":0},
+  {"question":"6 + 9 = ?","reponses":["15","14","16"],"bonneReponse":0},
+  {"question":"6 + 10 = ?","reponses":["16","15","17"],"bonneReponse":0},
+
+  {"question":"7 + 1 = ?","reponses":["7","8","9"],"bonneReponse":1},
+  {"question":"7 + 2 = ?","reponses":["8","9","10"],"bonneReponse":1},
+  {"question":"7 + 3 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  {"question":"7 + 4 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"7 + 5 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"7 + 6 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"7 + 7 = ?","reponses":["14","13","15"],"bonneReponse":0},
+  {"question":"7 + 8 = ?","reponses":["15","14","16"],"bonneReponse":0},
+  {"question":"7 + 9 = ?","reponses":["16","15","17"],"bonneReponse":0},
+  {"question":"7 + 10 = ?","reponses":["17","16","18"],"bonneReponse":0},
+
+  {"question":"8 + 1 = ?","reponses":["9","8","10"],"bonneReponse":0},
+  {"question":"8 + 2 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  {"question":"8 + 3 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"8 + 4 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"8 + 5 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"8 + 6 = ?","reponses":["14","13","15"],"bonneReponse":0},
+  {"question":"8 + 7 = ?","reponses":["15","14","16"],"bonneReponse":0},
+  {"question":"8 + 8 = ?","reponses":["16","15","17"],"bonneReponse":0},
+  {"question":"8 + 9 = ?","reponses":["17","16","18"],"bonneReponse":0},
+  {"question":"8 + 10 = ?","reponses":["18","17","19"],"bonneReponse":0},
+
+  {"question":"9 + 1 = ?","reponses":["10","9","11"],"bonneReponse":0},
+  {"question":"9 + 2 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"9 + 3 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"9 + 4 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"9 + 5 = ?","reponses":["14","13","15"],"bonneReponse":0},
+  {"question":"9 + 6 = ?","reponses":["15","14","16"],"bonneReponse":0},
+  {"question":"9 + 7 = ?","reponses":["16","15","17"],"bonneReponse":0},
+  {"question":"9 + 8 = ?","reponses":["17","16","18"],"bonneReponse":0},
+  {"question":"9 + 9 = ?","reponses":["18","17","19"],"bonneReponse":0},
+  {"question":"9 + 10 = ?","reponses":["19","18","20"],"bonneReponse":0},
+
+  {"question":"10 + 1 = ?","reponses":["11","10","12"],"bonneReponse":0},
+  {"question":"10 + 2 = ?","reponses":["12","11","13"],"bonneReponse":0},
+  {"question":"10 + 3 = ?","reponses":["13","12","14"],"bonneReponse":0},
+  {"question":"10 + 4 = ?","reponses":["14","13","15"],"bonneReponse":0},
+  {"question":"10 + 5 = ?","reponses":["15","14","16"],"bonneReponse":0},
+  {"question":"10 + 6 = ?","reponses":["16","15","17"],"bonneReponse":0},
+  {"question":"10 + 7 = ?","reponses":["17","16","18"],"bonneReponse":0},
+  {"question":"10 + 8 = ?","reponses":["18","17","19"],"bonneReponse":0},
+  {"question":"10 + 9 = ?","reponses":["19","18","20"],"bonneReponse":0},
+  {"question":"10 + 10 = ?","reponses":["20","19","21"],"bonneReponse":0}
+  ];
+
+    // 2️⃣ Tirer 10 questions aléatoires
+
+    function tirer10Questions() {
+      const copie = [...toutesLesQuestions];
+      for (let i = copie.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copie[i], copie[j]] = [copie[j], copie[i]];
+      }
+      return copie.slice(0, 10);
+    }
+
+    let questions = tirer10Questions();
+    let indexQuestion = 0;
+    let score = 0;
+
+    // 3️⃣ Afficher la question
+    function afficherQuestion() {
+      const q = questions[indexQuestion];
+
+      document.getElementById("question").textContent = q.question;
+      document.getElementById("progressionTexte").textContent =
+        `Question ${indexQuestion + 1} sur ${questions.length}`;
+      document.getElementById("feedback").textContent = "";
+      document.getElementById("suivant").style.display = "none";
+
+    const zoneReponses = document.getElementById("reponses");
+    zoneReponses.innerHTML = "";
+
+    // Mélanger les réponses
+    const reponsesMelangees = q.reponses
+        .map((rep, index) => ({ texte: rep, indexOriginal: index }))
+        .sort(() => Math.random() - 0.5); // tri aléatoire
+
+    reponsesMelangees.forEach(rep => {
+        const bouton = document.createElement("button");
+        bouton.textContent = rep.texte;
+        bouton.onclick = () => verifierReponse(rep.indexOriginal);
+        zoneReponses.appendChild(bouton);
+    });
+
+      // Barre de progression
+      document.getElementById("barre").style.width =
+        ((indexQuestion + 1) / questions.length * 100) + "%";
+    }
+
+ 
+
+    function verifierReponse(indexChoisi) {
+      const q = questions[indexQuestion];
+      const feedback = document.getElementById("feedback");
+      const boutonSuivant = document.getElementById("suivant");
+
+      if (indexChoisi === q.bonneReponse) {
+        score++;
+        feedback.textContent = "✅ Bonne réponse !";
+        feedback.style.color = "green";
+      } else {
+        feedback.textContent = `❌ Mauvaise réponse. La bonne réponse était : ${q.reponses[q.bonneReponse]}`;
+        feedback.style.color = "red";
+      }
+
+      document.querySelectorAll("#reponses button").forEach(b => b.disabled = true);
+      boutonSuivant.style.display = "block";
+    }
+
+    // 5️⃣ Question suivante
+function questionSuivante() {
+    indexQuestion++;
+    if (indexQuestion < questions.length) {
+        afficherQuestion();
+    } else {
+        afficherResultat();
+    }
+}
+
+
+    // 6️⃣ Afficher le résultat
+    function afficherResultat() {
+      const meilleurScore = localStorage.getItem("meilleurScore") || 0;
+      if (score > meilleurScore) localStorage.setItem("meilleurScore", score);
+
+      document.querySelector(".quiz-box").innerHTML = `
+        <h2>🎉 Fin du quiz !</h2>
+        <p>Score : ${score} / ${questions.length}</p>
+        <p>Meilleur score : ${Math.max(score, meilleurScore)} / ${questions.length}</p>
+        <a href="Louise.html">⬅ Retour aux thèmes</a><br><br>
+        <a href="index.html">🏠 Accueil</a><br><br>
+        <button id="rejouerBtn">🔄 Rejouer</button>
+      `;
+
+      document.getElementById("rejouerBtn").addEventListener("click", rejouerQuiz);
+    }
+
+    // 7️⃣ Rejouer
+    function rejouerQuiz() {
+      indexQuestion = 0;
+      score = 0;
+      questions = tirer10Questions(); // tirer un nouveau lot
+      afficherQuestion();
+    }
+
+    // 8️⃣ Initialisation
+    afficherQuestion();
+  </script>
 </body>
 </html>
