@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Le Compte est bon</title>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f0f4ff;
+    text-align: center;
+  }
+
+  h1 {
+    margin-top: 20px;
+  }
+
+  .numbers button, .ops button {
+    font-size: 22px;
+    padding: 15px;
+    margin: 5px;
+    width: 70px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .numbers button {
+    background: #4caf50;
+    color: white;
+  }
+
+  .ops button {
+    background: #2196f3;
+    color: white;
+  }
+
+  button.used {
+    background: #ccc;
+    cursor: default;
+  }
+
+  #target {
+    font-size: 30px;
+    margin: 20px;
+    font-weight: bold;
+  }
+
+  #current {
+    font-size: 26px;
+    margin: 15px;
+  }
+
+  #message {
+    font-size: 22px;
+    margin-top: 20px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧮 Le Compte est bon</h1>
+
+<div id="target"></div>
+
+<div class="numbers" id="numbers"></div>
+
+<div class="ops">
+  <button onclick="setOp('+')">+</button>
+  <button onclick="setOp('-')">−</button>
+  <button onclick="setOp('*')">×</button>
+  <button onclick="setOp('/')">÷</button>
+</div>
+
+<div id="current">Résultat : ?</div>
+<div id="message"></div>
+
+<button onclick="startGame()">🔄 Nouvelle partie</button>
+
+<script>
+  let numbers = [];
+  let target = 0;
+  let current = null;
+  let operation = null;
+
+  function startGame() {
+    numbers = [
+      1, 2, 3, 4, 5,
+      [10, 25, 50, 75][Math.floor(Math.random() * 4)]
+    ].sort(() => Math.random() - 0.5);
+
+    target = Math.floor(Math.random() * 900) + 100;
+
+    document.getElementById("numbers").innerHTML = "";
+    document.getElementById("message").textContent = "";
+    document.getElementById("current").textContent = "Résultat : ?";
+    document.getElementById("target").textContent = "🎯 Nombre à trouver : " + target;
+
+    current = null;
+    operation = null;
+
+    numbers.forEach(n => {
+      const btn = document.createElement("button");
+      btn.textContent = n;
+      btn.onclick = () => selectNumber(btn, n);
+      document.getElementById("numbers").appendChild(btn);
+    });
+  }
+
+  function setOp(op) {
+    operation = op;
+  }
+
+  function selectNumber(btn, n) {
+    if (btn.classList.contains("used")) return;
+
+    if (current === null) {
+      current = n;
+      btn.classList.add("used");
+    } else if (operation) {
+      let result = current;
+
+      if (operation === "+") result += n;
+      if (operation === "-") result -= n;
+      if (operation === "*") result *= n;
+      if (operation === "/") {
+        if (n === 0 || current % n !== 0) {
+          document.getElementById("message").textContent =
+            "❌ Division impossible";
+          operation = null;
+          return;
+        }
+        result /= n;
+      }
+
+      current = result;
+      btn.classList.add("used");
+      operation = null;
+    }
+
+    document.getElementById("current").textContent =
+      "Résultat : " + current;
+
+    checkWin();
+  }
+
+  function checkWin() {
+    if (current === target) {
+      document.getElementById("message").textContent =
+        "🎉 Bravo ! Compte trouvé !";
+    }
+  }
+
+  startGame();
+</script>
+
+</body>
+</html>
