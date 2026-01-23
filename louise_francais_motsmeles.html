@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mot croisé de conjugaison – CM1</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+table {
+  border-collapse: collapse;
+  margin-bottom: 15px;
+}
+
+td.info {
+  font-size: 14px;
+  padding-right: 10px;
+  text-align: left;
+  vertical-align: middle;
+  width: 200px;
+}
+
+td.case {
+  width: 35px;
+  height: 35px;
+  border: 1px solid black; /* bordures visibles */
+}
+
+input {
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  font-size: 18px;
+  text-transform: lowercase;
+  border: none;
+}
+
+.bon { background-color: #b6e6b6; }  /* vert clair */
+.faux { background-color: #f4b6b6; } /* rouge clair */
+
+button {
+  font-size: 16px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+
+<table id="grille">
+</table>
+
+<button onclick="verifier()">Vérifier</button>
+<p id="resultat"></p>
+
+<script>
+// ======== Liste des verbes ========
+let lignes = [
+  {pronom: "je", temps: "présent", verbe: "manger", solution: "mange"},
+  {pronom: "tu", temps: "futur", verbe: "aller", solution: "iras"},
+  {pronom: "il", temps: "imparfait", verbe: "jouer", solution: "jouait"},
+  {pronom: "nous", temps: "présent", verbe: "lire", solution: "lisons"},
+  {pronom: "vous", temps: "futur", verbe: "chanter", solution: "chanterez"},
+  {pronom: "ils", temps: "imparfait", verbe: "finir", solution: "finissaient"},
+  {pronom: "je", temps: "futur", verbe: "faire", solution: "ferai"},
+  {pronom: "tu", temps: "présent", verbe: "prendre", solution: "prends"},
+  {pronom: "elle", temps: "imparfait", verbe: "parler", solution: "parlait"},
+  {pronom: "nous", temps: "futur", verbe: "avoir", solution: "aurons"}
+];
+
+// ======== Création du tableau ========
+let table = document.getElementById("grille");
+lignes.forEach((ligne, index) => {
+  let tr = document.createElement("tr");
+
+  // colonne info
+  let tdInfo = document.createElement("td");
+  tdInfo.className = "info";
+  tdInfo.innerHTML = `${ligne.pronom} - ${ligne.temps} - VERBE: ${ligne.verbe}`;
+  tr.appendChild(tdInfo);
+
+  // colonnes cases
+  for (let i = 0; i < ligne.solution.length; i++) {
+    let tdCase = document.createElement("td");
+    tdCase.className = "case";
+    let input = document.createElement("input");
+    input.type = "text";
+    input.maxLength = 1;
+    input.id = `l${index}_c${i}`;
+    tdCase.appendChild(input);
+    tr.appendChild(tdCase);
+  }
+
+  table.appendChild(tr);
+});
+
+// ======== Vérification ========
+function verifier() {
+  let result = "";
+  lignes.forEach((ligne, index) => {
+    let correct = true;
+    for (let i = 0; i < ligne.solution.length; i++) {
+      let input = document.getElementById(`l${index}_c${i}`);
+      if (input.value.toLowerCase() === ligne.solution[i]) {
+        input.classList.add("bon");
+        input.classList.remove("faux");
+      } else {
+        input.classList.add("faux");
+        input.classList.remove("bon");
+        correct = false;
+      }
+    }
+    result += correct ? `✔️ Ligne ${index+1} : bon<br>` : `❌ Ligne ${index+1} : faux<br>`;
+  });
+  document.getElementById("resultat").innerHTML = result;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Géographique – France</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding-top: 20px;
+}
+
+.container {
+  display: flex;
+  gap: 50px;
+}
+
+.map {
+  position: relative;
+}
+
+.map img {
+  max-width: 500px;
+  display: block;
+}
+
+.point {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: red;
+  border-radius: 50%;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+}
+
+#quiz {
+  width: 250px;
+}
+
+button {
+  margin-top: 5px;
+  display: block;
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.correct { background-color: #b6e6b6; }
+.wrong { background-color: #f4b6b6; }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <div class="map">
+<img src="images\carte_france_vierge.png" alt="Carte de France">
+
+
+    
+    <!-- Exemples de points -->
+    <div class="point" style="top:30%; left:55%;" onclick="showQuiz(0)"></div>
+    <div class="point" style="top:20%; left:45%;" onclick="showQuiz(1)"></div>
+    <div class="point" style="top:55%; left:50%;" onclick="showQuiz(2)"></div>
+    <!-- Ajoutez jusqu'à 10 points -->
+  </div>
+
+  <div id="quiz">
+    <h3>Question</h3>
+    <p id="questionText">Cliquez sur un point sur la carte.</p>
+    <div id="options"></div>
+  </div>
+
+</div>
+
+<script>
+// ======= Questions =======
+let quizData = [
+  {
+    question: "Quelle ville est ici ?",
+    options: ["Paris", "Lyon", "Marseille", "Bordeaux", "Toulouse"],
+    answer: 0
+  },
+  {
+    question: "Quelle ville est ici ?",
+    options: ["Lille", "Nice", "Strasbourg", "Nantes", "Rennes"],
+    answer: 2
+  },
+  {
+    question: "Quelle ville est ici ?",
+    options: ["Toulouse", "Montpellier", "Lyon", "Bordeaux", "Marseille"],
+    answer: 4
+  }
+];
+
+// ======= Affichage du quiz =======
+function showQuiz(index) {
+  let q = quizData[index];
+  document.getElementById("questionText").textContent = q.question;
+
+  let optionsDiv = document.getElementById("options");
+  optionsDiv.innerHTML = "";
+
+  q.options.forEach((opt, i) => {
+    let btn = document.createElement("button");
+    btn.textContent = opt;
+    btn.onclick = () => {
+      if(i === q.answer){
+        btn.classList.add("correct");
+      } else {
+        btn.classList.add("wrong");
+      }
+    };
+    optionsDiv.appendChild(btn);
+  });
+}
+</script>
+
+</body>
+</html>

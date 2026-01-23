@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Drag & Drop – Maths</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.container {
+  display: flex;
+  gap: 50px;
+}
+
+/* Colonnes */
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Opérations et zones droppables */
+.operation {
+  padding: 10px 15px;
+  border: 2px dashed black;
+  min-width: 120px;
+  text-align: center;
+}
+
+.operation.correct {
+  background-color: #b6e6b6; /* vert */
+  border-style: solid;
+}
+
+.operation.wrong {
+  background-color: #f4b6b6; /* rouge */
+  border-style: solid;
+}
+
+/* Résultats à glisser */
+.result {
+  padding: 10px 15px;
+  border: 1px solid black;
+  background-color: #d0ebff;
+  text-align: center;
+  cursor: grab;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <!-- Opérations -->
+  <div class="column" id="operations">
+    <div class="operation" data-answer="8">5 + 3 = ?</div>
+    <div class="operation" data-answer="6">10 - 4 = ?</div>
+    <div class="operation" data-answer="9">7 + 2 = ?</div>
+  </div>
+
+  <!-- Résultats -->
+  <div class="column" id="results">
+    <div class="result" draggable="true" data-value="6">6</div>
+    <div class="result" draggable="true" data-value="8">8</div>
+    <div class="result" draggable="true" data-value="9">9</div>
+  </div>
+</div>
+
+<script>
+// ===== Drag & Drop =====
+let dragged = null;
+
+// Quand on commence à glisser
+document.querySelectorAll(".result").forEach(item => {
+  item.addEventListener("dragstart", (e) => {
+    dragged = item;
+  });
+});
+
+// Permet le drop
+document.querySelectorAll(".operation").forEach(op => {
+  op.addEventListener("dragover", (e) => e.preventDefault());
+
+  op.addEventListener("drop", (e) => {
+    e.preventDefault();
+    if(dragged){
+      // Placer le texte dans l'opération
+      op.textContent = `${op.textContent.split('=')[0]}= ${dragged.dataset.value}`;
+      
+      // Vérification immédiate
+      if(dragged.dataset.value === op.dataset.answer){
+        op.classList.add("correct");
+        op.classList.remove("wrong");
+      } else {
+        op.classList.add("wrong");
+        op.classList.remove("correct");
+      }
+      
+      // On peut cacher ou retirer le résultat
+      dragged.style.visibility = "hidden";
+      dragged = null;
+    }
+  });
+});
+</script>
+
+</body>
+</html>

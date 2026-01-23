@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Quiz Additions & Soustractions – Lignes visibles</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.container {
+  display: flex;
+  gap: 50px;
+  position: relative;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.word {
+  padding: 10px 15px;
+  border: 1px solid black;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  position: relative;
+}
+
+.word.selected {
+  background-color: #d0ebff;
+}
+
+#canvasLines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+button {
+  margin-top: 20px;
+  font-size: 16px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div>
+  <div class="container" id="quizContainer">
+    <canvas id="canvasLines"></canvas>
+
+    <!-- Colonne des opérations -->
+    <div class="column" id="leftColumn">
+      <div class="word" data-id="0">5 + 3</div>
+      <div class="word" data-id="1">10 - 4</div>
+      <div class="word" data-id="2">7 + 2</div>
+      <div class="word" data-id="3">9 - 5</div>
+      <div class="word" data-id="4">6 + 4</div>
+    </div>
+
+    <!-- Colonne des résultats -->
+    <div class="column" id="rightColumn">
+      <div class="word" data-id="2">9</div>
+      <div class="word" data-id="0">8</div>
+      <div class="word" data-id="4">10</div>
+      <div class="word" data-id="1">6</div>
+      <div class="word" data-id="3">4</div>
+    </div>
+  </div>
+
+  <button onclick="verifier()">Vérifier</button>
+  <p id="resultat"></p>
+</div>
+
+<script>
+let selectedLeft = null;
+let selectedRight = null;
+let connections = {}; // {opérationId: résultatId}
+
+const leftWords = document.querySelectorAll("#leftColumn .word");
+const rightWords = document.querySelectorAll("#rightColumn .word");
+
+const canvas = document.getElementById("canvasLines");
+const ctx = canvas.getContext("2d");
+
+function resizeCanvas() {
+  const container = document.getElementById("quizContainer");
+  canvas.width = container.offsetWidth;
+  canvas.height = container.offsetHeight;
+  drawLines();
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
+// ===== Sélection des mots =====
+leftWords.forEach(left => {
+  left.addEventListener("click", () => {
+    if(selectedLeft) selectedLeft.classList.remove("selected");
+    selectedLeft = left;
+    left.classList.add("selected");
+    connectIfReady();
+  });
+});
+
+rightWords.forEach(right => {
+  right.addEventListener("click", () => {
+    if(selectedRight) selectedRight.classList.remove("selected");
+    selectedRight = right;
+    selectedRight.classList.add("selected");
+    connectIfReady();
+  });
+});
+
+function connectIfReady() {
+  if(selectedLeft && selectedRight){
+    connections[selectedLeft.dataset.id] = selectedRight.dataset.id;
+    selectedLeft.classList.remove("selected");
+    selectedRight.classList.remove("selected");
+    selectedLeft = null;
+    selectedRight = null;
+    drawLines();
+  }
+}
+
+// ===== Dessiner les lignes =====
+function drawLines() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  Object.keys(connections).forEach(leftId => {
+    let rightId = connections[leftId];
+    let leftEl = document.querySelector(`#leftColumn .word[data-id='${leftId}']`);
+    let rightEl = document.querySelector(`#rightColumn .word[data-id='${rightId}']`);
+
+    const leftRect = leftEl.getBoundingClientRect();
+    const rightRect = rightEl.getBoundingClientRect();
+    const containerRect = document.getElementById("quizContainer").getBoundingClientRect();
+
+    const startX = leftRect.right - containerRect.left;
+    const startY = leftRect.top + leftRect.height/2 - containerRect.top;
+    const endX = rightRect.left - containerRect.left;
+    const endY = rightRect.top + rightRect.height/2 - containerRect.top;
+
+    ctx.beginPath();
+    ctx.moveTo(startX, startY);
+    ctx.lineTo(endX, endY);
+    ctx.strokeStyle = "black";
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  });
+}
+
+// ===== Vérification =====
+function verifier() {
+  let correctPairs = {
+    0: "0", // 5+3=8
+    1: "1", // 10-4=6
+    2: "2", // 7+2=9
+    3: "3", // 9-5=4
+    4: "4"  // 6+4=10
+  };
+
+  let resultText = "";
+  Object.keys(correctPairs).forEach(leftId => {
+    let leftWord = document.querySelector(`#leftColumn .word[data-id='${leftId}']`).textContent;
+    if(connections[leftId] === correctPairs[leftId]){
+      resultText += `✔️ ${leftWord} → correct<br>`;
+    } else {
+      resultText += `❌ ${leftWord} → incorrect<br>`;
+    }
+  });
+  document.getElementById("resultat").innerHTML = resultText;
+}
+</script>
+
+</body>
+</html>

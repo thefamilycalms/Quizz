@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mot croisé – Les verbes (CM1)</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+  }
+  table {
+    border-collapse: collapse;
+    margin-bottom: 15px;
+  }
+  td {
+    width: 35px;
+    height: 35px;
+    border: 1px solid black;
+    text-align: center;
+  }
+  input {
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    font-size: 18px;
+    border: none;
+    text-transform: lowercase;
+  }
+  .black {
+    background-color: black;
+  }
+</style>
+</head>
+
+<body>
+
+<h2>Mot croisé – Les verbes (CM1)</h2>
+
+<table>
+<tr>
+  <td><input type="text" maxlength="1" id="m1"></td>
+  <td><input type="text" maxlength="1" id="m2"></td>
+  <td><input type="text" maxlength="1" id="m3"></td>
+  <td><input type="text" maxlength="1" id="m4"></td>
+  <td><input type="text" maxlength="1" id="m5"></td>
+  <td><input type="text" maxlength="1" id="m6"></td>
+</tr>
+
+<tr>
+  <td><input type="text" maxlength="1" id="a1"></td>
+  <td><input type="text" maxlength="1" id="a2"></td>
+  <td><input type="text" maxlength="1" id="a3"></td>
+  <td><input type="text" maxlength="1" id="a4"></td>
+  <td><input type="text" maxlength="1" id="a5"></td>
+</tr>
+
+<tr>
+  <td><input type="text" maxlength="1" id="j1"></td>
+  <td><input type="text" maxlength="1" id="j2"></td>
+  <td><input type="text" maxlength="1" id="j3"></td>
+  <td><input type="text" maxlength="1" id="j4"></td>
+  <td><input type="text" maxlength="1" id="j5"></td>
+</tr>
+</table>
+
+<h3>Définitions</h3>
+<p>1. Verbe : prendre un repas</p>
+<p>2. Verbe : se déplacer (aller quelque part)</p>
+<p>3. Verbe : s’amuser avec un jeu</p>
+
+<button onclick="verifier()">Vérifier</button>
+
+<p id="resultat"></p>
+
+<script>
+function verifier() {
+  let manger =
+    m1.value + m2.value + m3.value + m4.value + m5.value + m6.value;
+  let aller =
+    a1.value + a2.value + a3.value + a4.value + a5.value;
+  let jouer =
+    j1.value + j2.value + j3.value + j4.value + j5.value;
+
+  let resultat = "";
+
+  if (manger === "manger") {
+    resultat += "✔️ MANGER : bon<br>";
+  } else {
+    resultat += "❌ MANGER : faux<br>";
+  }
+
+  if (aller === "aller") {
+    resultat += "✔️ ALLER : bon<br>";
+  } else {
+    resultat += "❌ ALLER : faux<br>";
+  }
+
+  if (jouer === "jouer") {
+    resultat += "✔️ JOUER : bon<br>";
+  } else {
+    resultat += "❌ JOUER : faux<br>";
+  }
+
+  document.getElementById("resultat").innerHTML = resultat;
+}
+</script>
+
+</body>
+</html>

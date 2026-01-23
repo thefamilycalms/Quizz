@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Memory Français - Anglais (CP)</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #f0f8ff;
+  }
+
+  h1 {
+    color: #333;
+  }
+
+  .game {
+    display: grid;
+    grid-template-columns: repeat(4, 120px);
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .card {
+    background: #4caf50;
+    color: white;
+    font-size: 20px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    border-radius: 10px;
+  }
+
+  .card.revealed {
+    background: white;
+    color: black;
+    cursor: default;
+  }
+
+  .card.matched {
+    background: #ddd;
+    color: #999;
+    cursor: default;
+  }
+</style>
+</head>
+<body>
+
+<h1>Memory Français 🇫🇷 / Anglais 🇬🇧</h1>
+<p>Trouve les mots qui vont ensemble !</p>
+
+<div class="game" id="game"></div>
+
+<script>
+  const words = [
+    { word: "chat", pair: "cat" },
+    { word: "chien", pair: "dog" },
+    { word: "pomme", pair: "apple" },
+    { word: "soleil", pair: "sun" }
+  ];
+
+  let cards = [];
+  words.forEach(w => {
+    cards.push({ text: w.word, id: w.pair });
+    cards.push({ text: w.pair, id: w.pair });
+  });
+
+  cards.sort(() => Math.random() - 0.5);
+
+  const game = document.getElementById("game");
+  let firstCard = null;
+  let secondCard = null;
+
+  cards.forEach(card => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.textContent = "?";
+    div.dataset.text = card.text;
+    div.dataset.id = card.id;
+
+    div.onclick = () => {
+      if (div.classList.contains("revealed") || secondCard) return;
+
+      div.textContent = div.dataset.text;
+      div.classList.add("revealed");
+
+      if (!firstCard) {
+        firstCard = div;
+      } else {
+        secondCard = div;
+        setTimeout(checkMatch, 800);
+      }
+    };
+
+    game.appendChild(div);
+  });
+
+  function checkMatch() {
+    if (firstCard.dataset.id === secondCard.dataset.id) {
+      firstCard.classList.add("matched");
+      secondCard.classList.add("matched");
+    } else {
+      firstCard.textContent = "?";
+      secondCard.textContent = "?";
+      firstCard.classList.remove("revealed");
+      secondCard.classList.remove("revealed");
+    }
+    firstCard = null;
+    secondCard = null;
+  }
+</script>
+
+</body>
+</html>
