@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>➕ Mathématiques – Louise</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .quiz-box {
+            background: white;
+            padding: 25px;
+            max-width: 600px;
+ 	    margin: 10px auto 0 auto;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Navigation fixe à gauche */
+        .side-nav {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: gap;
+            gap: 10px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+/* Barre de progression */
+#progressContainer {
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 80%;
+    margin: 20px auto;
+    height: 15px;
+}
+
+#barre {
+    height: 100%;
+    width: 0%;
+    background: #4CAF50;
+}
+
+/* Chronomètre */
+#chrono {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Feedback */
+#feedback {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+    </style>
+</head>
+<body>
+
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="louise.html">📝 Matières</a>
+    <a href="louise_mathematiques_sommaire.html">➕ Mathématiques</a>
+</div>
+
+    <h1>💂‍♂️ Anglais - Memory</h1>
+
+<div id="chrono">⏱️ Temps : 0s</div>
+<div id="progressionTexte"></div>
+<div id="progressContainer">
+<div id="barre"></div>
+</div>
+
+
+    <div class="quiz-box" id="quizBox">
+        <h2 id="question"></h2>
+	<img id="image" style="max-width:100%; display:none; margin:15px 0;">
+        <div id="reponses"></div>
+        <p id="feedback"></p>
+
+    </div>
+<div id="resultats" style="display:none;"></div>
+
+<script>
+    // 1️⃣ Pool de toutes les questions
+
+const vocabulaire = [
+ ["chat","cat"],["chien","dog"],["maison","house"],["école","school"],
+ ["livre","book"],["table","table"],["chaise","chair"],["pomme","apple"],
+ ["eau","water"],["soleil","sun"],["lune","moon"],["rouge","red"],
+ ["bleu","blue"],["vert","green"],["manger","eat"],["boire","drink"],
+ ["jouer","play"],["courir","run"],["marcher","walk"],["stylo","pen"],
+ ["crayon","pencil"],["sac","bag"],["porte","door"],["fenêtre","window"],
+ ["arbre","tree"],["fleur","flower"],["voiture","car"],["vélo","bike"],
+ ["ami","friend"],["famille","family"],["père","father"],["mère","mother"],
+ ["frère","brother"],["sœur","sister"],["jour","day"],["nuit","night"],
+ ["classe","class"],["maître","teacher"],["élève","student"],
+ ["écrire","write"],["lire","read"],["écouter","listen"],["parler","speak"],
+ ["ouvrir","open"],["fermer","close"],["grand","big"],["petit","small"]
+];
+
+let cartes = [];
+let cartesRetournees = [];
+let pairesTrouvees = 0;
+let chrono = 0;
+let intervalChrono;
+
+// ====== CHRONO ======
+function demarrerChrono() {
+    intervalChrono = setInterval(() => {
+        chrono++;
+        document.getElementById("chrono").textContent = `⏱️ Temps : ${chrono}s`;
+    }, 1000);
+}
+
+function creerCartes() {
+  const paires = [...vocabulaire].sort(()=>Math.random()-0.5).slice(0,10);
+  cartes = [];
+
+  paires.forEach((p, index) => {
+    cartes.push({texte:p[0], paire:index, trouve:false});
+    cartes.push({texte:p[1], paire:index, trouve:false});
+  });
+
+  cartes.sort(()=>Math.random()-0.5);
+}
+
+function afficherCartes() {
+  const zone = document.getElementById("reponses");
+  zone.innerHTML = "";
+  zone.style.display = "grid";
+  zone.style.gridTemplateColumns = "repeat(5, 1fr)";
+  zone.style.gap = "10px";
+
+  cartes.forEach((carte, i) => {
+    const bouton = document.createElement("button");
+    bouton.textContent = "❓";
+    bouton.style.height = "60px";
+
+    bouton.onclick = () => retournerCarte(i, bouton);
+    zone.appendChild(bouton);
+  });
+}
+
+function retournerCarte(index, bouton){
+  if(cartes[index].trouve || cartesRetournees.length === 2) return;
+
+  bouton.textContent = cartes[index].texte;
+  cartesRetournees.push({index, bouton});
+
+  if(cartesRetournees.length === 2){
+    verifierPaire();
+  }
+}
+
+function verifierPaire(){
+  const [c1, c2] = cartesRetournees;
+
+  if(cartes[c1.index].paire === cartes[c2.index].paire){
+    cartes[c1.index].trouve = true;
+    cartes[c2.index].trouve = true;
+    pairesTrouvees++;
+
+    cartesRetournees = [];
+
+    if(pairesTrouvees === 10){
+      finQuiz();
+    }
+  } else {
+    setTimeout(()=>{
+      c1.bouton.textContent = "❓";
+      c2.bouton.textContent = "❓";
+      cartesRetournees = [];
+    }, 800);
+  }
+} 
+
+
+
+// ====== FIN DU QUIZ ======
+function finQuiz(){
+    clearInterval(intervalChrono);
+
+    // Récupérer meilleurs temps
+    let meilleursTemps = JSON.parse(localStorage.getItem("meilleursTemps")) || [];
+    const dateActuelle = new Date().toLocaleDateString();
+
+    meilleursTemps.push({temps: chrono, date: dateActuelle});
+    meilleursTemps.sort((a,b)=>a.temps-b.temps);
+    if(meilleursTemps.length>10) meilleursTemps=meilleursTemps.slice(0,10);
+    localStorage.setItem("meilleursTemps", JSON.stringify(meilleursTemps));
+
+    const listeTemps = meilleursTemps.map(t=>`<li>${t.temps}s - ${t.date}</li>`).join("");
+
+    // Masquer le quiz et afficher les résultats
+    document.getElementById("quizBox").style.display = "none";
+    document.getElementById("resultats").style.display = "block";
+    document.getElementById("resultats").innerHTML = `
+        <h2>🎉 Fin du quiz !</h2>
+        <p>⏱️ Temps total : ${chrono}s</p>
+        <h3>🏆 Meilleurs temps :</h3>
+        <ol style="text-align:left">${listeTemps}</ol>
+        <button onclick="rejouerQuiz()">🔄 Rejouer</button>
+    `;
+}
+
+
+    // 7️⃣ Rejouer
+function rejouerQuiz(){
+  clearInterval(intervalChrono);
+  chrono = 0;
+  pairesTrouvees = 0;
+  cartesRetournees = [];
+
+  document.getElementById("resultats").style.display = "none";
+  document.getElementById("quizBox").style.display = "block";
+
+  creerCartes();
+  afficherCartes();
+  demarrerChrono();
+}
+
+    // 8️⃣ Initialisation
+creerCartes();
+afficherCartes();
+demarrerChrono();
+</script>
+</body>
+</html>

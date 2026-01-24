@@ -2,246 +2,171 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>➕ Anglais – Louise</title>
+    <title>Louise niveau CM1</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f2f6ff;
-            text-align: center;
-            padding: 30px;
+            background-color: #e8f5e9;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        .quiz-box {
-            background: white;
-            padding: 25px;
-            max-width: 600px;
-            margin: auto;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        button {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 12px;
-            font-size: 16px;
+        /* Navigation fixe à gauche */
+        .side-nav {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            background-color: #f0f0f0;
+            padding: 5px;
             border-radius: 8px;
-            border: none;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+
+        .side-nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 6px 10px;
+            border-radius: 5px;
+            background-color: #ddd;
+            transition: background-color 0.3s;
+        }
+
+
+        .side-nav a:hover {
+            background-color: #bbb;
+        }
+
+        /* Menu principal */
+        .menu-container {
+            text-align: center;
+            max-width: 800px; /* Plus large pour 3 colonnes */
+            width: 100%;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .menu {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
             background-color: #4CAF50;
             color: white;
-            cursor: pointer;
+            font-size: 18px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            text-decoration: none;
+            transition: transform 0.2s, background-color 0.2s;
+
         }
 
-        button:hover {
+        .menu a span {
+            margin-left: 10px;
+        }
+
+        .menu a:hover {
             background-color: #45a049;
+            transform: translateY(-3px);
         }
 
-/* Navigation fixe à gauche */
-.side-nav {
-    position: fixed;      /* reste fixe quand on scroll */
-    top: 50px;            /* décale du haut */
-    left: 10px;           /* à gauche */
+/* Sous-menu */
+.submenu {
+    display: none;
+    grid-column: 1 / -1;
+    margin-top: 10px;
+    gap: 10px;
+    justify-content: center; /* centrer les cases */
+    grid-template-columns: repeat(auto-fit, minmax(120px, auto));
+
+}
+
+.submenu a {
     display: flex;
-    flex-direction: column;
-    gap: 10px;            /* espace entre les boutons */
-    background-color: #f0f0f0;
-    padding: 10px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    font-size: 14px;
+    background-color: rgba(33, 150, 243, 0.7); /* bleu semi-transparent */
+    color: white;
     border-radius: 8px;
-    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    font-size: 14px;      /* plus petit */
-    z-index: 1000;        /* toujours au-dessus du contenu */
-}
-
-.side-nav a {
     text-decoration: none;
-    color: #333;
-    padding: 6px 10px;
-    border-radius: 5px;
-    background-color: #ddd;
-    transition: background-color 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.2s, background-color 0.2s;
 }
 
-.side-nav a:hover {
-    background-color: #bbb;
+.submenu a:hover {
+    background-color: rgba(33, 150, 243, 0.9);
+    transform: translateY(-2px);
 }
-
-
-
 
     </style>
 </head>
 <body>
-<!-- Bloc de navigation à gauche -->
+
+
+<!-- Navigation fixe à gauche -->
 <div class="side-nav">
     <a href="index.html">🏠 Accueil</a>
-    <a href="Louise.html">⬅ Retour aux thèmes</a>
-    <a href="Alice.html">Alice</a>
-    <a href="Famille.html">Famille</a>
+    <a href="louise.html">📝 Matières</a>
+
 </div>
 
+<div class="menu-container">  
+  <h1>💂‍♂️ Anglais - niveau CM1</h1>
+    <p>Choisis ton excercice :</p>
 
-    <h1>➕ Anglais – Louise</h1>
+  <div class="menu">
+      <a href="#" class="activite" data-target="quizSub">🎯 Quiz</a>
+      <a href="#" class="activite" data-target="relierSub">🔗 Mots à relier</a>
+      <a href="#" class="activite" data-target="croisesSub">📝 Mots croisés</a>
+      <a href="#" class="activite" data-target="dragSub">🎮 Glisser-coller</a>
+      <a href="#" class="activite" data-target="carteSub">🗺️ Points sur carte</a>
+      <a href="louise_anglais_memory.html">💭 Mémory</a>
+      <a href="#" class="activite" data-target="fichesSub">🧩 Fiches mémoire</a>
 
-  <!-- Progression texte et barre -->
-  <p id="progressionTexte"></p>
-  <div style="background:#ddd; border-radius:10px; overflow:hidden;">
-      <div id="barre" style="height:15px; width:0%; background:#4CAF50;"></div>
-  </div>
+      <!-- Sous-menus -->
+      <div id="quizSub" class="submenu">
+          <a href="louise_quiz_additions.html">➕ Additions</a>
+          <a href="louise_quiz_soustractions.html">➖ Soustractions</a>
+          <a href="louise_quiz_multiplications.html">✖️ Multiplications</a>
+          <a href="louise_quiz_divisions.html">➗ Divisions</a>
+          <a href="louise_quiz_math_aleatoire.html">🎲 Aléatoire</a>
 
-
-    <div class="quiz-box">
-        <h2 id="question"></h2>
-	<img id="image" style="max-width:100%; display:none; margin:15px 0;">
-        <div id="reponses"></div>
-    	<p id="feedback" style="font-size:18px; font-weight:bold;"></p>
-
-    <button id="suivant" style="display:none;" onclick="questionSuivante()">    
-        ➡️ Question suivante
-    </button>
+      </div>
 
     </div>
 
 <script>
-    // 1️⃣ Pool de toutes les questions
-
-const toutesLesQuestions = [
-
-  {"question":"Comment dit-on 'Bonjour' en anglais ?","reponses":["Hello","Goodbye","Please"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Merci' en anglais ?","reponses":["Thank you","Sorry","Yes"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Chien' en anglais ?","reponses":["Dog","Cat","Bird"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Chat' en anglais ?","reponses":["Cat","Dog","Horse"],"bonneReponse":0},
-  {"question":"Que signifie 'Red' ?","reponses":["Rouge","Vert","Bleu"],"bonneReponse":0},
-  {"question":"Que signifie 'Blue' ?","reponses":["Bleu","Jaune","Orange"],"bonneReponse":0},
-  {"question":"Que signifie 'Green' ?","reponses":["Vert","Rouge","Rose"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Maison' en anglais ?","reponses":["House","School","Car"],"bonneReponse":0},
-  {"question":"Comment dit-on 'École' en anglais ?","reponses":["School","House","Teacher"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Livre' en anglais ?","reponses":["Book","Pen","Chair"],"bonneReponse":0},
-  {"question":"Que signifie 'Apple' ?","reponses":["Pomme","Poire","Banane"],"bonneReponse":0},
-  {"question":"Que signifie 'Banana' ?","reponses":["Banane","Orange","Raisin"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Merci beaucoup' en anglais ?","reponses":["Thank you very much","Hello","Good night"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Oui' en anglais ?","reponses":["Yes","No","Maybe"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Non' en anglais ?","reponses":["No","Yes","Please"],"bonneReponse":0},
-  {"question":"Comment dit-on 'S'il te plaît' en anglais ?","reponses":["Please","Thank you","Sorry"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Frère' en anglais ?","reponses":["Brother","Father","Uncle"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Sœur' en anglais ?","reponses":["Sister","Mother","Aunt"],"bonneReponse":0},
-  {"question":"Que signifie 'Mother' ?","reponses":["Mère","Père","Fille"],"bonneReponse":0},
-  {"question":"Que signifie 'Father' ?","reponses":["Père","Mère","Grand-mère"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Rouge' en anglais ?","reponses":["Red","Blue","Green"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Vert' en anglais ?","reponses":["Green","Red","Yellow"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Jaune' en anglais ?","reponses":["Yellow","Blue","Green"],"bonneReponse":0},
-  {"question":"Que signifie 'Dog' ?","reponses":["Chien","Chat","Lapin"],"bonneReponse":0},
-  {"question":"Que signifie 'Cat' ?","reponses":["Chat","Chien","Poisson"],"bonneReponse":0},
-  {"question":"Que signifie 'Bird' ?","reponses":["Oiseau","Chien","Chat"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Bonjour, comment ça va ?' en anglais ?","reponses":["Hello, how are you ?","Goodbye, see you","Please, thank you"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Je m'appelle …' en anglais ?","reponses":["My name is …","I am …","You are …"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Merci, au revoir' en anglais ?","reponses":["Thank you, goodbye","Hello, please","Yes, no"],"bonneReponse":0},
-  {"question":"Comment dit-on 'Je t’aime' en anglais ?","reponses":["I love you","I like you","I hate you"],"bonneReponse":0}
-];
-
-    // 2️⃣ Tirer 10 questions aléatoires
-
-    function tirer10Questions() {
-      const copie = [...toutesLesQuestions];
-      for (let i = copie.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [copie[i], copie[j]] = [copie[j], copie[i]];
-      }
-      return copie.slice(0, 10);
-    }
-
-    let questions = tirer10Questions();
-    let indexQuestion = 0;
-    let score = 0;
-
-    // 3️⃣ Afficher la question
-    function afficherQuestion() {
-      const q = questions[indexQuestion];
-
-      document.getElementById("question").textContent = q.question;
-      document.getElementById("progressionTexte").textContent =
-        `Question ${indexQuestion + 1} sur ${questions.length}`;
-      document.getElementById("feedback").textContent = "";
-      document.getElementById("suivant").style.display = "none";
-
-    const zoneReponses = document.getElementById("reponses");
-    zoneReponses.innerHTML = "";
-
-    // Mélanger les réponses
-    const reponsesMelangees = q.reponses
-        .map((rep, index) => ({ texte: rep, indexOriginal: index }))
-        .sort(() => Math.random() - 0.5); // tri aléatoire
-
-    reponsesMelangees.forEach(rep => {
-        const bouton = document.createElement("button");
-        bouton.textContent = rep.texte;
-        bouton.onclick = () => verifierReponse(rep.indexOriginal);
-        zoneReponses.appendChild(bouton);
+// Toggle sous-menu
+document.querySelectorAll('.activite').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = btn.dataset.target;
+        const submenu = document.getElementById(targetId);
+        // Cacher tous les autres sous-menus
+        document.querySelectorAll('.submenu').forEach(sm => sm.style.display = 'none');
+        // Afficher celui cliqué
+        submenu.style.display = 'grid';
     });
+});
+</script>
 
-      // Barre de progression
-      document.getElementById("barre").style.width =
-        ((indexQuestion + 1) / questions.length * 100) + "%";
-    }
-
- 
-
-    function verifierReponse(indexChoisi) {
-      const q = questions[indexQuestion];
-      const feedback = document.getElementById("feedback");
-      const boutonSuivant = document.getElementById("suivant");
-
-      if (indexChoisi === q.bonneReponse) {
-        score++;
-        feedback.textContent = "✅ Bonne réponse !";
-        feedback.style.color = "green";
-      } else {
-        feedback.textContent = `❌ Mauvaise réponse. La bonne réponse était : ${q.reponses[q.bonneReponse]}`;
-        feedback.style.color = "red";
-      }
-
-      document.querySelectorAll("#reponses button").forEach(b => b.disabled = true);
-      boutonSuivant.style.display = "block";
-    }
-
-    // 5️⃣ Question suivante
-function questionSuivante() {
-    indexQuestion++;
-    if (indexQuestion < questions.length) {
-        afficherQuestion();
-    } else {
-        afficherResultat();
-    }
-}
-
-
-    // 6️⃣ Afficher le résultat
-    function afficherResultat() {
-      const meilleurScore = localStorage.getItem("meilleurScore") || 0;
-      if (score > meilleurScore) localStorage.setItem("meilleurScore", score);
-
-      document.querySelector(".quiz-box").innerHTML = `
-        <h2>🎉 Fin du quiz !</h2>
-        <p>Score : ${score} / ${questions.length}</p>
-        <p>Meilleur score : ${Math.max(score, meilleurScore)} / ${questions.length}</p>
-        <a href="Louise.html">⬅ Retour aux thèmes</a><br><br>
-        <a href="index.html">🏠 Accueil</a><br><br>
-        <button id="rejouerBtn">🔄 Rejouer</button>
-      `;
-
-      document.getElementById("rejouerBtn").addEventListener("click", rejouerQuiz);
-    }
-
-    // 7️⃣ Rejouer
-    function rejouerQuiz() {
-      indexQuestion = 0;
-      score = 0;
-      questions = tirer10Questions(); // tirer un nouveau lot
-      afficherQuestion();
-    }
-
-    // 8️⃣ Initialisation
-    afficherQuestion();
-  </script>
 </body>
 </html>

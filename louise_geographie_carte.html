@@ -7,34 +7,70 @@
 body {
   font-family: Arial, sans-serif;
   display: flex;
-  justify-content: center;
-  padding-top: 20px;
+  flex-direction: column;
+  margin: 0;
+  padding-top: 70px; /* Espace pour la barre horizontale */
 }
 
+        /* Navigation fixe à gauche */
+        .side-nav {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+
+        .side-nav a {
+            text-decoration: none;
+            color: #333;
+            padding: 6px 10px;
+            border-radius: 5px;
+            background-color: #ddd;
+            transition: background-color 0.3s;
+        }
+
+
+        .side-nav a:hover {
+            background-color: #bbb;
+        }
+
+/* Container carte + quiz */
 .container {
   display: flex;
+  margin-left: 150px; /* espace pour la barre fixe */
   gap: 50px;
+  padding: 20px;
+  align-items: flex-start;
 }
 
+/* Carte */
 .map {
   position: relative;
 }
-
 .map img {
   max-width: 500px;
   display: block;
 }
-
 .point {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 12px;
+  height: 12px;
   background-color: red;
   border-radius: 50%;
   cursor: pointer;
   transform: translate(-50%, -50%);
 }
 
+/* Quiz à droite */
 #quiz {
   width: 250px;
 }
@@ -52,72 +88,195 @@ button {
 .wrong { background-color: #f4b6b6; }
 </style>
 </head>
-
 <body>
+
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="matiere.html">📝 Matières</a>
+    <a href="math.html">➕ Mathématiques</a>
+</div>
 
 <div class="container">
 
+  <!-- Carte à gauche -->
   <div class="map">
-<img src="images\carte_france_vierge.png" alt="Carte de France">
-
-
-    
-    <!-- Exemples de points -->
-    <div class="point" style="top:30%; left:55%;" onclick="showQuiz(0)"></div>
-    <div class="point" style="top:20%; left:45%;" onclick="showQuiz(1)"></div>
-    <div class="point" style="top:55%; left:50%;" onclick="showQuiz(2)"></div>
-    <!-- Ajoutez jusqu'à 10 points -->
+    <img src="images/cartes/france_departement_couleur.png" alt="Carte de France">
+    <!-- Le point sera généré par JavaScript -->
   </div>
 
+  <!-- Quiz à droite -->
   <div id="quiz">
     <h3>Question</h3>
-    <p id="questionText">Cliquez sur un point sur la carte.</p>
+    <p id="questionText">Cliquez sur le point sur la carte.</p>
     <div id="options"></div>
   </div>
 
 </div>
 
 <script>
-// ======= Questions =======
-let quizData = [
-  {
-    question: "Quelle ville est ici ?",
-    options: ["Paris", "Lyon", "Marseille", "Bordeaux", "Toulouse"],
-    answer: 0
-  },
-  {
-    question: "Quelle ville est ici ?",
-    options: ["Lille", "Nice", "Strasbourg", "Nantes", "Rennes"],
-    answer: 2
-  },
-  {
-    question: "Quelle ville est ici ?",
-    options: ["Toulouse", "Montpellier", "Lyon", "Bordeaux", "Marseille"],
-    answer: 4
-  }
+// ======= Structure pour 90 départements (exemple) =======
+const pointsData = [
+  { nom: "Ain", x: 68, y: 52 },
+  { nom: "Aisne", x: 57, y: 17 },
+  { nom: "Allier", x: 54, y: 50 },
+  { nom: "Alpes-de-Haute-Provence", x: 74, y: 73 },
+  { nom: "Hautes-Alpes", x: 76, y: 66 },
+  { nom: "Alpes-Maritimes", x: 81, y: 74 },
+  { nom: "Ardèche", x: 62, y: 67 },
+  { nom: "Ardennes", x: 62, y: 17 },
+  { nom: "Ariège", x: 42, y: 85 },
+  { nom: "Aube", x: 60, y: 30 },
+  { nom: "Aude", x: 49, y: 83 },
+  { nom: "Aveyron", x: 51, y: 71 },
+  { nom: "Bouches-du-Rhône", x: 68, y: 79 },
+  { nom: "Calvados", x: 32, y: 22 },
+  { nom: "Cantal", x: 50, y: 63 },
+  { nom: "Charente", x: 35, y: 57 },
+  { nom: "Charente-Maritime", x: 28, y: 55 },
+  { nom: "Cher", x: 50, y: 43 },
+  { nom: "Corrèze", x: 45, y: 60 },
+  { nom: "Corse-du-Sud", x: 95, y: 94 },
+  { nom: "Haute-Corse", x: 95, y: 88 },
+  { nom: "Côte-d'Or", x: 64, y: 40 },
+  { nom: "Côtes-d'Armor", x: 16, y: 27 },
+  { nom: "Creuse", x: 47, y: 53 },
+  { nom: "Dordogne", x: 38, y: 63 },
+  { nom: "Doubs", x: 74, y: 41 },
+  { nom: "Drôme", x: 67, y: 67 },
+  { nom: "Eure", x: 41, y: 23 },
+  { nom: "Eure-et-Loir", x: 42, y: 30 },
+  { nom: "Finistère", x: 9, y: 28 },
+  { nom: "Gard", x: 61, y: 74 },
+  { nom: "Haute-Garonne", x: 0, y: 0 },
+  { nom: "Gers", x: 0, y: 0 },
+  { nom: "Gironde", x: 0, y: 0 },
+  { nom: "Hérault", x: 0, y: 0 },
+  { nom: "Ille-et-Vilaine", x: 0, y: 0 },
+  { nom: "Indre", x: 0, y: 0 },
+  { nom: "Indre-et-Loire", x: 0, y: 0 },
+  { nom: "Isère", x: 0, y: 0 },
+  { nom: "Jura", x: 0, y: 0 },
+  { nom: "Landes", x: 0, y: 0 },
+  { nom: "Loir-et-Cher", x: 0, y: 0 },
+  { nom: "Loire", x: 0, y: 0 },
+  { nom: "Haute-Loire", x: 0, y: 0 },
+  { nom: "Loire-Atlantique", x: 23, y: 40 },
+  { nom: "Loiret", x: 0, y: 0 },
+  { nom: "Lot", x: 0, y: 0 },
+  { nom: "Lot-et-Garonne", x: 0, y: 0 },
+  { nom: "Lozère", x: 0, y: 0 },
+  { nom: "Maine-et-Loire", x: 0, y: 0 },
+  { nom: "Manche", x: 0, y: 0 },
+  { nom: "Marne", x: 0, y: 0 },
+  { nom: "Haute-Marne", x: 0, y: 0 },
+  { nom: "Mayenne", x: 0, y: 0 },
+  { nom: "Meurthe-et-Moselle", x: 0, y: 0 },
+  { nom: "Meuse", x: 0, y: 0 },
+  { nom: "Morbihan", x: 0, y: 0 },
+  { nom: "Moselle", x: 0, y: 0 },
+  { nom: "Nièvre", x: 0, y: 0 },
+  { nom: "Nord", x: 55, y: 9 },
+  { nom: "Oise", x: 49, y: 19 },
+  { nom: "Orne", x: 0, y: 0 },
+  { nom: "Pas-de-Calais", x: 48, y: 8 },
+  { nom: "Puy-de-Dôme", x: 0, y: 0 },
+  { nom: "Pyrénées-Atlantiques", x: 0, y: 0 },
+  { nom: "Hautes-Pyrénées", x: 0, y: 0 },
+  { nom: "Pyrénées-Orientales", x: 0, y: 0 },
+  { nom: "Bas-Rhin", x: 0, y: 0 },
+  { nom: "Haut-Rhin", x: 0, y: 0 },
+  { nom: "Rhône", x: 0, y: 0 },
+  { nom: "Haute-Saône", x: 0, y: 0 },
+  { nom: "Saône-et-Loire", x: 0, y: 0 },
+  { nom: "Sarthe", x: 0, y: 0 },
+  { nom: "Savoie", x: 0, y: 0 },
+  { nom: "Haute-Savoie", x: 0, y: 0 },
+  { nom: "Paris", x: 0, y: 0 },
+  { nom: "Seine-Maritime", x: 41, y: 17 },
+  { nom: "Seine-et-Marne", x: 0, y: 0 },
+  { nom: "Yvelines", x: 0, y: 0 },
+  { nom: "Deux-Sèvres", x: 0, y: 0 },
+  { nom: "Somme", x: 49, y: 14 },
+  { nom: "Tarn", x: 0, y: 0 },
+  { nom: "Tarn-et-Garonne", x: 0, y: 0 },
+  { nom: "Var", x: 0, y: 0 },
+  { nom: "Vaucluse", x: 0, y: 0 },
+  { nom: "Vendée", x: 0, y: 0 },
+  { nom: "Vienne", x: 0, y: 0 },
+  { nom: "Haute-Vienne", x: 0, y: 0 },
+  { nom: "Vosges", x: 0, y: 0 },
+  { nom: "Yonne", x: 0, y: 0 },
+  { nom: "Territoire de Belfort", x: 0, y: 0 },
+  { nom: "Essonne", x: 0, y: 0 },
+  { nom: "Hauts-de-Seine", x: 0, y: 0 },
+  { nom: "Seine-Saint-Denis", x: 0, y: 0 },
+  { nom: "Val-de-Marne", x: 0, y: 0 },
+  { nom: "Val-d'Oise", x: 0, y: 0 },
+  { nom: "Guadeloupe", x: 0, y: 0 },
+  { nom: "Martinique", x: 0, y: 0 },
+  { nom: "Guyane", x: 0, y: 0 },
+  { nom: "La Réunion", x: 0, y: 0 },
+  { nom: "Mayotte", x: 0, y: 0 }
 ];
 
-// ======= Affichage du quiz =======
-function showQuiz(index) {
-  let q = quizData[index];
-  document.getElementById("questionText").textContent = q.question;
+// ======= Affichage d’un point aléatoire =======
+function showRandomPoint() {
+  const mapDiv = document.querySelector(".map");
+  mapDiv.querySelectorAll(".point").forEach(p => p.remove());
 
-  let optionsDiv = document.getElementById("options");
+  // Choisir un département au hasard
+  const index = Math.floor(Math.random() * pointsData.length);
+  const dep = pointsData[index];
+
+  // Créer le point
+  const point = document.createElement("div");
+  point.className = "point";
+  point.style.top = dep.y + "%";
+  point.style.left = dep.x + "%";
+  point.onclick = () => showQuiz(dep);
+
+  mapDiv.appendChild(point);
+}
+
+// ======= Affichage du quiz =======
+function showQuiz(dep) {
+  const optionsDiv = document.getElementById("options");
   optionsDiv.innerHTML = "";
 
-  q.options.forEach((opt, i) => {
-    let btn = document.createElement("button");
-    btn.textContent = opt;
-    btn.onclick = () => {
-      if(i === q.answer){
+  document.getElementById("questionText").textContent =
+    "Quel est ce département ?";
+
+  // Créer 4 propositions aléatoires
+  let propositions = [dep.nom];
+  while(propositions.length < 5) {
+    const randomDep = pointsData[Math.floor(Math.random() * pointsData.length)].nom;
+    if(!propositions.includes(randomDep)) propositions.push(randomDep);
+  }
+
+  // Mélanger les propositions
+  propositions.sort(() => Math.random() - 0.5);
+
+  propositions.forEach(name => {
+    const btn = document.createElement("button");
+    btn.textContent = name;
+btn.onclick = () => {
+    if(name === dep.nom){
         btn.classList.add("correct");
-      } else {
+
+        // attendre 0,5 s puis afficher un nouveau point
+        setTimeout(() => {
+            showRandomPoint();
+        }, 500);
+    } else {
         btn.classList.add("wrong");
-      }
-    };
+    }
+};
     optionsDiv.appendChild(btn);
   });
 }
+
+// Afficher un point au chargement
+showRandomPoint();
 </script>
 
 </body>

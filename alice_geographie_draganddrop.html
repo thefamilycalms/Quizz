@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>➕ Géographie – CP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+h1{ margin-bottom:10px; }
+
+        /* Navigation fixe à gauche */
+        .side-nav {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: gap;
+            gap: 10px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+#chrono{
+  font-size:18px;
+  font-weight:bold;
+  margin-bottom:15px;
+}
+
+#zoneJeu{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-top:20px;
+}
+
+/* Conteneur drapeaux en colonne */
+#drapeaux {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Taille fixe des drapeaux */
+#drapeaux img, .drapeau {
+  width: 50px;
+  height: auto;
+  margin: 10px;
+  cursor: grab;
+}
+
+/* Pays */
+.pays{
+  background:#eef;
+  padding:15px;
+  border-radius:8px;
+  margin:10px 0;
+  min-width:160px;
+  font-size: 14px; /* <- taille réduite */
+  text-align: left;
+}
+
+.pays.correct{
+  background:#c8f7c5;
+  font-weight:bold;
+  display: flex;         /* aligne horizontalement */
+  align-items: center;   /* verticalement centré */
+  gap: 10px;             /* espace entre texte et drapeau */
+}
+
+#resultats{
+  display:none;
+  margin-top:30px;
+}
+</style>
+</head>
+
+<body>
+
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="alice.html">📝 Matières</a>
+    <a href="alice_geographie_sommaire.html">🌍 Géographie</a>
+</div>
+
+<h1>🏳️ Associe les drapeaux</h1>
+<div id="chrono">⏱️ 0 s</div>
+
+<div id="zoneJeu">
+  <div id="drapeaux"></div>
+  <div id="pays"></div>
+</div>
+
+<div id="resultats"></div>
+
+<script>
+    // 1️⃣ Pool de toutes les questions
+
+const questions = [
+  { nom:"France", drapeau:"images/drapeaux/france.png" },
+  { nom:"Allemagne", drapeau:"images/drapeaux/allemagne.png" },
+  { nom:"Italie", drapeau:"images/drapeaux/italie.png" },
+  { nom:"Espagne", drapeau:"images/drapeaux/espagne.png" },
+  { nom:"Portugal", drapeau:"images/drapeaux/portugal.png" },
+  { nom:"Belgique", drapeau:"images/drapeaux/belgique.png" },
+  { nom:"Pays-Bas", drapeau:"images/drapeaux/pays_bas.png" },
+  { nom:"Luxembourg", drapeau:"images/drapeaux/luxembourg.png" },
+  { nom:"Suisse", drapeau:"images/drapeaux/suisse.png" },
+  { nom:"Autriche", drapeau:"images/drapeaux/autriche.png" },
+  { nom:"Pologne", drapeau:"images/drapeaux/pologne.png" },
+  { nom:"Grèce", drapeau:"images/drapeaux/grece.png" },
+  { nom:"Suède", drapeau:"images/drapeaux/suede.png" },
+  { nom:"Norvège", drapeau:"images/drapeaux/norvege.png" },
+  { nom:"Finlande", drapeau:"images/drapeaux/finlande.png" }
+];
+
+let selection = [];
+let bonnesReponses = 0;
+let chrono = 0;
+let intervalChrono;
+
+// ====== CHRONO ======
+function demarrerChrono() {
+    clearInterval(intervalChrono);
+    intervalChrono = setInterval(() => {
+        chrono++;
+        document.getElementById("chrono").textContent = `⏱️ Temps : ${chrono}s`;
+    }, 1000);
+}
+
+function init(){
+  chrono = 0;
+  bonnesReponses = 0;
+  clearInterval(intervalChrono);
+  demarrerChrono();
+
+  selection = [...questions].sort(()=>Math.random()-0.5).slice(0,5);
+
+  document.getElementById("zoneJeu").style.display="flex";
+  document.getElementById("drapeaux").innerHTML="";
+  document.getElementById("pays").innerHTML="";
+  document.getElementById("resultats").style.display="none";
+
+  afficherDrapeaux();
+  afficherPays();
+}
+
+function afficherDrapeaux(){
+    selection.forEach((pays, i) => {
+        const img = document.createElement("img");
+        img.src = pays.drapeau;
+        img.draggable = true;
+        img.dataset.index = i;
+        img.classList.add("drapeau");
+
+        img.ondragstart = e => {
+            e.dataTransfer.setData("index", i);
+
+            // Créer un ghost pour que le drag n'agrandisse pas l'image
+            const ghost = img.cloneNode(true);
+            ghost.style.width = "80px";
+            ghost.style.height = "auto";
+            ghost.style.position = "absolute";
+            ghost.style.top = "-1000px";
+            document.body.appendChild(ghost);
+
+            e.dataTransfer.setDragImage(ghost, 40, 40);
+
+            setTimeout(() => document.body.removeChild(ghost), 0);
+        };
+
+        document.getElementById("drapeaux").appendChild(img);
+    });
+}
+
+function afficherPays() {
+    selection
+      .slice()
+      .sort(() => Math.random() - 0.5)
+      .forEach(pays => {
+          const div = document.createElement("div");
+          div.className = "pays";
+          div.textContent = pays.nom;
+
+          div.ondragover = e => e.preventDefault(); // autorise le drop
+          div.ondrop = e => {
+              const index = e.dataTransfer.getData("index");
+              if (selection[index].nom === pays.nom) {
+                  div.classList.add("correct");
+                  div.appendChild(document.querySelector(`img[data-index="${index}"]`));
+                  bonnesReponses++;
+                  if (bonnesReponses === selection.length) {
+                      finQuiz();
+                  }
+              }
+          };
+
+          document.getElementById("pays").appendChild(div);
+      });
+}
+
+// ====== FIN DU QUIZ ======
+function finQuiz(){
+    clearInterval(intervalChrono);
+
+    // Récupérer meilleurs temps
+    let meilleursTemps = JSON.parse(localStorage.getItem("meilleursTemps")) || [];
+    const dateActuelle = new Date().toLocaleDateString();
+
+    meilleursTemps.push({temps: chrono, date: dateActuelle});
+    meilleursTemps.sort((a,b)=>a.temps-b.temps);
+    if(meilleursTemps.length>10) meilleursTemps=meilleursTemps.slice(0,10);
+    localStorage.setItem("meilleursTemps", JSON.stringify(meilleursTemps));
+
+    const listeTemps = meilleursTemps.map(
+      t=>`<li>${t.temps}s - ${t.date}</li>`
+    ).join("");
+
+    // Masquer le quiz et afficher les résultats
+    document.getElementById("zoneJeu").style.display="none";
+    document.getElementById("resultats").style.display="block";
+    document.getElementById("resultats").innerHTML = `
+        <h2>🎉 Fin du quiz !</h2>
+        <p>⏱️ Temps total : ${chrono}s</p>
+        <h3>🏆 Meilleurs temps :</h3>
+        <ol style="text-align:left">${listeTemps}</ol>
+        <button onclick="rejouer()">🔄 Rejouer</button>
+    `;
+}
+
+
+    // 7️⃣ Rejouer
+function rejouer(){
+  document.getElementById("zoneJeu").style.display="flex";
+  init();
+}
+
+    // 8️⃣ Initialisation
+init();
+</script>
+
+</body>
+</html>
