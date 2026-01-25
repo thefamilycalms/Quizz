@@ -55,19 +55,24 @@ body {
 /* Carte */
 .map {
   position: relative;
+  width: 500px; /* ou max-width */
+
 }
 .map img {
-  max-width: 500px;
+  width: 100%;
   display: block;
 }
+
 .point {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   background-color: red;
+  border: 2px solid white;
   border-radius: 50%;
   cursor: pointer;
   transform: translate(-50%, -50%);
+  z-index: 10;
 }
 
 /* Quiz à droite */
@@ -113,15 +118,13 @@ button {
   <!-- Quiz à droite -->
   <div id="quiz">
     <h3>Question</h3>
-    <p id="questionText">Cliquez sur le point sur la carte.</p>
+    <p id="questionText">Quel est ce département ?</p>
     <div id="options"></div>
 
-    <!-- Bouton quitter -->
     <button class="quit" onclick="window.location.href='famille.html'">
       Quitter le quiz
-    </button> 
-
- </div>
+    </button>
+  </div>
 
 </div>
 
@@ -160,65 +163,65 @@ const pointsData = [
   { nom: "Finistère", x: 9, y: 28 },
   { nom: "Gard", x: 61, y: 74 },
   { nom: "Haute-Garonne", x: 42, y: 80 },
-  { nom: "Gers", x: 0, y: 0 },
-  { nom: "Gironde", x: 0, y: 0 },
-  { nom: "Hérault", x: 0, y: 0 },
-  { nom: "Ille-et-Vilaine", x: 0, y: 0 },
-  { nom: "Indre", x: 0, y: 0 },
-  { nom: "Indre-et-Loire", x: 0, y: 0 },
-  { nom: "Isère", x: 0, y: 0 },
-  { nom: "Jura", x: 0, y: 0 },
-  { nom: "Landes", x: 0, y: 0 },
-  { nom: "Loir-et-Cher", x: 0, y: 0 },
-  { nom: "Loire", x: 0, y: 0 },
-  { nom: "Haute-Loire", x: 0, y: 0 },
+  { nom: "Gers", x: 36, y: 77 },
+  { nom: "Gironde", x: 30, y: 66 },
+  { nom: "Hérault", x: 56, y: 79 },
+  { nom: "Ille-et-Vilaine", x: 25, y: 31 },
+  { nom: "Indre", x: 44, y: 60 },
+  { nom: "Indre-et-Loire", x: 38, y: 41 },
+  { nom: "Isère", x: 69, y: 61 },
+  { nom: "Jura", x: 71, y: 47 },
+  { nom: "Landes", x: 27, y: 74 },
+  { nom: "Loir-et-Cher", x: 43, y: 38 },
+  { nom: "Loire", x: 60, y: 57 },
+  { nom: "Haute-Loire", x: 58, y: 63 },
   { nom: "Loire-Atlantique", x: 23, y: 40 },
-  { nom: "Loiret", x: 0, y: 0 },
-  { nom: "Lot", x: 0, y: 0 },
-  { nom: "Lot-et-Garonne", x: 0, y: 0 },
-  { nom: "Lozère", x: 0, y: 0 },
-  { nom: "Maine-et-Loire", x: 0, y: 0 },
-  { nom: "Manche", x: 0, y: 0 },
-  { nom: "Marne", x: 0, y: 0 },
-  { nom: "Haute-Marne", x: 0, y: 0 },
-  { nom: "Mayenne", x: 0, y: 0 },
-  { nom: "Meurthe-et-Moselle", x: 0, y: 0 },
-  { nom: "Meuse", x: 0, y: 0 },
-  { nom: "Morbihan", x: 0, y: 0 },
-  { nom: "Moselle", x: 0, y: 0 },
-  { nom: "Nièvre", x: 0, y: 0 },
+  { nom: "Loiret", x: 49, y: 34 },
+  { nom: "Lot", x: 44, y: 68 },
+  { nom: "Lot-et-Garonne", x: 36, y: 71 },
+  { nom: "Lozère", x: 56, y: 69 },
+  { nom: "Maine-et-Loire", x: 31, y: 40 },
+  { nom: "Manche", x: 26, y: 21 },
+  { nom: "Marne", x: 61, y: 23 },
+  { nom: "Haute-Marne", x: 67, y: 33 },
+  { nom: "Mayenne", x: 30, y: 31 },
+  { nom: "Meurthe-et-Moselle", x: 72, y: 26 },
+  { nom: "Meuse", x: 67, y: 23 },
+  { nom: "Morbihan", x: 17, y: 34 },
+  { nom: "Moselle", x: 74, y: 22 },
+  { nom: "Nièvre", x: 56, y: 71 },
   { nom: "Nord", x: 55, y: 9 },
   { nom: "Oise", x: 49, y: 19 },
-  { nom: "Orne", x: 0, y: 0 },
+  { nom: "Orne", x: 35, y: 25 },
   { nom: "Pas-de-Calais", x: 48, y: 8 },
-  { nom: "Puy-de-Dôme", x: 0, y: 0 },
-  { nom: "Pyrénées-Atlantiques", x: 0, y: 0 },
-  { nom: "Hautes-Pyrénées", x: 0, y: 0 },
-  { nom: "Pyrénées-Orientales", x: 0, y: 0 },
-  { nom: "Bas-Rhin", x: 0, y: 0 },
-  { nom: "Haut-Rhin", x: 0, y: 0 },
-  { nom: "Rhône", x: 0, y: 0 },
-  { nom: "Haute-Saône", x: 0, y: 0 },
-  { nom: "Saône-et-Loire", x: 0, y: 0 },
-  { nom: "Sarthe", x: 0, y: 0 },
-  { nom: "Savoie", x: 0, y: 0 },
-  { nom: "Haute-Savoie", x: 0, y: 0 },
-  { nom: "Paris", x: 0, y: 0 },
+  { nom: "Puy-de-Dôme", x: 54, y: 57 },
+  { nom: "Pyrénées-Atlantiques", x: 28, y: 81 },
+  { nom: "Hautes-Pyrénées", x: 34, y: 84 },
+  { nom: "Pyrénées-Orientales", x: 49, y: 83 },
+  { nom: "Bas-Rhin", x: 81, y: 25 },
+  { nom: "Haut-Rhin", x: 80, y: 34 },
+  { nom: "Rhône", x: 64, y: 56 },
+  { nom: "Haute-Saône", x: 72, y: 37 },
+  { nom: "Saône-et-Loire", x: 62, y: 47 },
+  { nom: "Sarthe", x: 36, y: 33 },
+  { nom: "Savoie", x: 76, y: 59 },
+  { nom: "Haute-Savoie", x: 75, y: 53 },
+  { nom: "Paris", x: 49, y: 25 },
   { nom: "Seine-Maritime", x: 41, y: 17 },
-  { nom: "Seine-et-Marne", x: 0, y: 0 },
-  { nom: "Yvelines", x: 0, y: 0 },
-  { nom: "Deux-Sèvres", x: 0, y: 0 },
+  { nom: "Seine-et-Marne", x: 53, y: 27 },
+  { nom: "Yvelines", x: 46, y: 25 },
+  { nom: "Deux-Sèvres", x: 32, y: 47 },
   { nom: "Somme", x: 49, y: 14 },
-  { nom: "Tarn", x: 0, y: 0 },
-  { nom: "Tarn-et-Garonne", x: 0, y: 0 },
-  { nom: "Var", x: 0, y: 0 },
-  { nom: "Vaucluse", x: 0, y: 0 },
-  { nom: "Vendée", x: 0, y: 0 },
-  { nom: "Vienne", x: 0, y: 0 },
-  { nom: "Haute-Vienne", x: 0, y: 0 },
-  { nom: "Vosges", x: 0, y: 0 },
-  { nom: "Yonne", x: 0, y: 0 },
-  { nom: "Territoire de Belfort", x: 0, y: 0 },
+  { nom: "Tarn", x: 47, y: 76 },
+  { nom: "Tarn-et-Garonne", x: 41, y: 74 },
+  { nom: "Var", x: 75, y: 80 },
+  { nom: "Vaucluse", x: 67, y: 74 },
+  { nom: "Vendée", x: 25, y: 47 },
+  { nom: "Vienne", x: 37, y: 48 },
+  { nom: "Haute-Vienne", x: 42, y: 56 },
+  { nom: "Vosges", x: 74, y: 31 },
+  { nom: "Yonne", x: 56, y: 35 },
+  { nom: "Territoire de Belfort", x: 78, y: 36 },
   { nom: "Essonne", x: 0, y: 0 },
   { nom: "Hauts-de-Seine", x: 0, y: 0 },
   { nom: "Seine-Saint-Denis", x: 0, y: 0 },
@@ -238,25 +241,26 @@ const optionsDiv = document.getElementById("options");
 
 // ======= Affichage d’un point aléatoire =======
 function showRandomPoint() {
+  // Supprime les anciens points
   mapDiv.querySelectorAll(".point").forEach(p => p.remove());
 
-  const dep = pointsData[Math.floor(Math.random() * pointsData.length)];
+  // Supprime les anciennes options
+  optionsDiv.innerHTML = "";
 
+  // Choisir un département aléatoire
+  const dep = pointsData[Math.floor(Math.random() * pointsData.length)];
+  console.log("Point choisi :", dep);
+
+  // Créer le point
   const point = document.createElement("div");
   point.className = "point";
   point.style.left = dep.x + "%";
   point.style.top = dep.y + "%";
-  point.onclick = () => showQuiz(dep);
 
   mapDiv.appendChild(point);
-}
 
-function showQuiz(dep) {
-  questionText.textContent = "Quel est ce département ?";
-  optionsDiv.innerHTML = "";
-
+  // Créer les propositions
   let choices = [dep.nom];
-
   while (choices.length < 4) {
     const random = pointsData[Math.floor(Math.random() * pointsData.length)].nom;
     if (!choices.includes(random)) choices.push(random);
@@ -267,7 +271,6 @@ function showQuiz(dep) {
   choices.forEach(name => {
     const btn = document.createElement("button");
     btn.textContent = name;
-
     btn.onclick = () => {
       if (name === dep.nom) {
         btn.classList.add("correct");
@@ -276,13 +279,15 @@ function showQuiz(dep) {
         btn.classList.add("wrong");
       }
     };
-
     optionsDiv.appendChild(btn);
   });
 }
 
-showRandomPoint();
 
+
+// Lancement initial
+showRandomPoint();
+</script>
 
 </body>
 </html>

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>➕ Mathématiques – Alice</title>
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f2f6ff;
+  text-align: center;
+  padding: 30px;
+}
+
+/* Navigation */
+.side-nav {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  gap: 10px;
+  background-color: #f0f0f0;
+  padding: 5px;
+  border-radius: 8px;
+  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  font-size: 14px;
+  z-index: 1000;
+}
+.side-nav a {
+  text-decoration: none;
+  color: #333;
+  padding: 6px 10px;
+  border-radius: 5px;
+  background-color: #ddd;
+}
+.side-nav a:hover { background-color: #bbb; }
+
+/* Quiz */
+.container {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  margin-left: 150px;
+  padding: 20px;
+  gap: 150px;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.word {
+  padding: 10px 15px;
+  border: 1px solid black;
+  cursor: pointer;
+}
+.word.selected { background-color: #d0ebff; }
+.word.correct { background-color: #c8e6c9; border-color: green; }
+.word.wrong { background-color: #ffcdd2; border-color: red; }
+
+#canvasLines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+/* Boutons */
+.bottom-buttons {
+  margin-left: 150px;
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.bottom-buttons button {
+  width: 170px;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#validateBtn { background-color: #2196F3; color: white; }
+#replayBtn { background-color: #4CAF50; color: white; }
+#quitBtn { background-color: #f44336; color: white; }
+
+#scoreText {
+  margin-left: 150px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="side-nav">
+  <a href="index.html">🏠 Accueil</a>
+  <a href="matiere.html">📝 Matières</a>
+  <a href="math.html">➕ Mathématiques</a>
+</div>
+
+<div class="container" id="quizContainer">
+  <canvas id="canvasLines"></canvas>
+  <div class="column" id="leftColumn"></div>
+  <div class="column" id="rightColumn"></div>
+</div>
+
+<div class="bottom-buttons">
+  <button id="validateBtn">Valider le quiz</button>
+  <button id="replayBtn">Rejouer</button>
+  <button id="quitBtn">Quitter le quiz</button>
+</div>
+
+<p id="scoreText"></p>
+
+<script>
+const allQuestions = [
+  { op: "5 + 3", res: "8" },
+  { op: "10 - 4", res: "6" },
+  { op: "7 + 2", res: "9" },
+  { op: "9 - 5", res: "4" },
+  { op: "6 + 4", res: "10" },
+  { op: "8 + 1", res: "9" },
+  { op: "12 - 7", res: "5" }
+];
+
+let questions = [];
+let connections = {};
+let selectedLeft = null;
+let selectedRight = null;
+
+const leftColumn = document.getElementById("leftColumn");
+const rightColumn = document.getElementById("rightColumn");
+const canvas = document.getElementById("canvasLines");
+const ctx = canvas.getContext("2d");
+
+function shuffle(a){ return a.sort(()=>Math.random()-0.5); }
+
+function resizeCanvas(){
+  const c = document.getElementById("quizContainer");
+  canvas.width = c.offsetWidth;
+  canvas.height = c.offsetHeight;
+  drawLines();
+}
+window.addEventListener("resize", resizeCanvas);
+
+function startQuiz(){
+  leftColumn.innerHTML = "";
+  rightColumn.innerHTML = "";
+  connections = {};
+  document.getElementById("scoreText").textContent = "";
+
+  questions = shuffle([...allQuestions]).slice(0,5);
+  const res = shuffle(questions.map(q=>q.res));
+
+  questions.forEach((q,i)=>{
+    const d = document.createElement("div");
+    d.className = "word";
+    d.textContent = q.op;
+    d.dataset.id = i;
+    d.onclick = ()=>{ selectLeft(d); };
+    leftColumn.appendChild(d);
+  });
+
+  res.forEach((r,i)=>{
+    const d = document.createElement("div");
+    d.className = "word";
+    d.textContent = r;
+    d.dataset.id = i;
+    d.onclick = ()=>{ selectRight(d); };
+    rightColumn.appendChild(d);
+  });
+
+  resizeCanvas();
+}
+
+function selectLeft(el){
+  if(selectedLeft) selectedLeft.classList.remove("selected");
+  selectedLeft = el;
+  el.classList.add("selected");
+  connect();
+}
+
+function selectRight(el){
+  if(selectedRight) selectedRight.classList.remove("selected");
+  selectedRight = el;
+  el.classList.add("selected");
+  connect();
+}
+
+function connect(){
+  if(selectedLeft && selectedRight){
+    connections[selectedLeft.dataset.id] = selectedRight.dataset.id;
+    selectedLeft.classList.remove("selected");
+    selectedRight.classList.remove("selected");
+    selectedLeft = selectedRight = null;
+    drawLines();
+  }
+}
+
+function drawLines(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  Object.keys(connections).forEach(i=>{
+    const l = leftColumn.children[i];
+    const r = rightColumn.children[connections[i]];
+    const c = document.getElementById("quizContainer").getBoundingClientRect();
+    const lr = l.getBoundingClientRect();
+    const rr = r.getBoundingClientRect();
+
+    ctx.beginPath();
+    ctx.moveTo(lr.right-c.left, lr.top+lr.height/2-c.top);
+    ctx.lineTo(rr.left-c.left, rr.top+rr.height/2-c.top);
+    ctx.stroke();
+  });
+}
+
+function validateQuiz(){
+  let score = 0;
+  questions.forEach((q,i)=>{
+    const l = leftColumn.children[i];
+    const rId = connections[i];
+    if(rId === undefined){ l.classList.add("wrong"); return; }
+    const r = rightColumn.children[rId];
+    if(r.textContent === q.res){
+      score++; l.classList.add("correct"); r.classList.add("correct");
+    } else {
+      l.classList.add("wrong"); r.classList.add("wrong");
+    }
+  });
+  document.getElementById("scoreText").textContent =
+    `Résultat : ${score} / ${questions.length}`;
+}
+
+document.getElementById("validateBtn").onclick = validateQuiz;
+document.getElementById("replayBtn").onclick = startQuiz;
+document.getElementById("quitBtn").onclick = ()=>location.href="famille.html";
+
+startQuiz();
+</script>
+
+</body>
+</html>
