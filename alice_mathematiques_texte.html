@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>➕ Mathématiques – Alice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f6ff;
+            text-align: center;
+            padding: 30px;
+        }
+
+#quiz {
+  background: white;
+  padding: 25px;
+  width: 320px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+#number {
+  font-size: 40px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+input {
+  width: 70%;
+  padding: 6px;
+  font-size: 15px;
+  margin: 10px auto;
+  display: block;
+  text-align: center;
+}
+
+button {
+  width: 40%;
+  padding: 6px;
+  font-size: 14px;
+  margin: 6px auto;
+  display: block;
+  cursor: pointer;
+}
+
+.wrong {
+  color: red;
+  margin-top: 10px;
+}
+
+        /* Navigation fixe à gauche */
+        .side-nav {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            display: flex;
+            flex-direction: gap;
+            gap: 10px;
+            background-color: #f0f0f0;
+            padding: 5px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+            font-size: 14px;
+            z-index: 1000;
+        }
+
+.side-nav a {
+    text-decoration: none;
+    color: #333;
+    padding: 6px 10px;
+    border-radius: 5px;
+    background-color: #ddd;
+    transition: background-color 0.3s;
+}
+
+.side-nav a:hover {
+    background-color: #bbb;
+}
+
+    </style>
+</head>
+<body>
+
+<!-- Bloc de navigation à gauche -->
+<div class="side-nav">
+    <a href="index.html">🏠 Accueil</a>
+    <a href="louise.html">📝 Matières</a>
+    <a href="louise_mathematiques_sommaire.html">➕ Mathématiques</a>
+</div>
+
+    <h1>➕ Mathématiques - Texte</h1>
+
+    <h2>Ecris ce nombre en lettre : </h2>
+
+  <div id="number"></div>
+
+  <input type="text" id="answerInput" placeholder="Ta réponse">
+
+  <button onclick="validateAnswer()">Valider</button>
+  <button onclick="showAnswer()">Voir la réponse</button>
+
+  <p id="feedback"></p>
+</div>
+
+<script>
+
+// =====================
+// LISTE DES NOMBRES
+// =====================
+let numbers = Array.from({ length: 30 }, (_, i) => i + 1);
+numbers.sort(() => Math.random() - 0.5);
+
+let current = 0;
+
+// =====================
+// CONVERSION EN LETTRES
+// =====================
+function numberToWords(n) {
+  const words = [
+    "", "un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf",
+    "dix", "onze", "douze", "treize", "quatorze", "quinze", "seize",
+    "dix-sept", "dix-huit", "dix-neuf",
+    "vingt", "vingt et un", "vingt-deux", "vingt-trois", "vingt-quatre",
+    "vingt-cinq", "vingt-six", "vingt-sept", "vingt-huit", "vingt-neuf",
+    "trente"
+  ];
+  return words[n];
+}
+
+// =====================
+// NORMALISATION TEXTE
+// =====================
+function normalize(text) {
+  return text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[\s-]/g, "");
+}
+
+// =====================
+// AFFICHAGE QUESTION
+// =====================
+function showQuestion() {
+  document.getElementById("number").textContent = numbers[current];
+  document.getElementById("answerInput").value = "";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("feedback").className = "";
+}
+
+// =====================
+// VALIDATION
+// =====================
+function validateAnswer() {
+  const userAnswer = normalize(
+    document.getElementById("answerInput").value
+  );
+  const correctAnswer = normalize(
+    numberToWords(numbers[current])
+  );
+
+  if (userAnswer === correctAnswer) {
+    document.getElementById("feedback").textContent = "✅ Bonne réponse !";
+    document.getElementById("feedback").className = "correct";
+    setTimeout(nextQuestion, 800);
+  } else {
+    document.getElementById("feedback").textContent = "❌ Ce n’est pas correct.";
+    document.getElementById("feedback").className = "wrong";
+  }
+}
+
+// =====================
+// VOIR RÉPONSE
+// =====================
+function showAnswer() {
+  document.getElementById("feedback").textContent =
+    "Réponse : " + numberToWords(numbers[current]);
+  document.getElementById("feedback").className = "";
+  setTimeout(nextQuestion, 1200);
+}
+
+// =====================
+// QUESTION SUIVANTE
+// =====================
+function nextQuestion() {
+  current++;
+
+  if (current >= numbers.length) {
+    document.getElementById("quiz").innerHTML =
+      "<h3>🎉 Bravo ! Exercice terminé.</h3>";
+  } else {
+    showQuestion();
+  }
+}
+
+// =====================
+// DÉMARRAGE
+// =====================
+showQuestion();
+</script>
+
+</body>
+</html>
