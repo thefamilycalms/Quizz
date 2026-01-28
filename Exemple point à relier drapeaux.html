@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>➕ Mathématiques – Alice</title>
+<title>➕ Géogaphie – Alice</title>
 
 <style>
 body {
@@ -50,9 +50,13 @@ body {
   gap: 15px;
 }
 .word {
-  padding: 10px 15px;
+  padding: 10px;
   border: 1px solid black;
   cursor: pointer;
+  height: 40px;                /* même hauteur partout */
+  display: flex;
+  align-items: center;         /* centrage vertical */
+  justify-content: center;     /* centrage horizontal */
 }
 .word.selected { background-color: #d0ebff; }
 .word.correct { background-color: #c8e6c9; border-color: green; }
@@ -67,11 +71,10 @@ body {
 
 /* Boutons */
 .bottom-buttons {
-  margin-left: 150px;
-  margin-top: 20px;
+  top: 300px;
+  position: fixed;
   display: flex;
   flex-direction: column;
-  align-items: center;
   gap: 10px;
 }
 .bottom-buttons button {
@@ -91,6 +94,19 @@ body {
   margin-top: 10px;
   font-weight: bold;
 }
+
+.word img {
+  width: 50px;
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+/* Supprimer le cadre autour des drapeaux */
+#rightColumn .word {
+  border: none;
+}
+
 </style>
 </head>
 
@@ -98,11 +114,11 @@ body {
 
 <div class="side-nav">
   <a href="index.html">🏠 Accueil</a>
-  <a href="louise.html">📝 Matières</a>
-  <a href="louise_histoire_sommaire.html">📜 Histoire</a>
+  <a href="alice.html">📝 Matières</a>
+  <a href="alice_geographie_sommaire.html">➕ geographie</a>
 </div>
 
-<h3> Relie les évènements et les dates ensemble </h3>
+    <h2>Relie drapeaux et pays ensemble</h2>
 
 <div class="container" id="quizContainer">
   <canvas id="canvasLines"></canvas>
@@ -120,12 +136,21 @@ body {
 
 <script>
 const allQuestions = [
-  { op: "Début des Carolingiens", res: "751" },
-  { op: "Charlemagne devient roi", res: "768" },
-  { op: "Couronnement de Charlemagne", res: "800" },
-  { op: "Mort de Charlemagne", res: "814" },
-  { op: "Traité de Verdun", res: "843" },
-  { op: "Naissance de papa et maman", res: "1989" },
+  { op:"France", img:"images/drapeaux/france.png" },
+  { op:"Allemagne", img:"images/drapeaux/allemagne.png" },
+  { op:"Italie", img:"images/drapeaux/italie.png" },
+  { op:"Espagne", img:"images/drapeaux/espagne.png" },
+  { op:"Portugal", img:"images/drapeaux/portugal.png" },
+  { op:"Belgique", img:"images/drapeaux/belgique.png" },
+  { op:"Pays-Bas", img:"images/drapeaux/pays_bas.png" },
+  { op:"Luxembourg", img:"images/drapeaux/luxembourg.png" },
+  { op:"Suisse", img:"images/drapeaux/suisse.png" },
+  { op:"Autriche", img:"images/drapeaux/autriche.png" },
+  { op:"Pologne", img:"images/drapeaux/pologne.png" },
+  { op:"Grèce", img:"images/drapeaux/grece.png" },
+  { op:"Suède", img:"images/drapeaux/suede.png" },
+  { op:"Norvège", img:"images/drapeaux/norvege.png" },
+  { op:"Finlande", img:"images/drapeaux/finlande.png" }
 ];
 
 let questions = [];
@@ -155,7 +180,7 @@ function startQuiz(){
   document.getElementById("scoreText").textContent = "";
 
   questions = shuffle([...allQuestions]).slice(0,5);
-  const res = shuffle(questions.map(q=>q.res));
+  const res = shuffle([...questions]);
 
   questions.forEach((q,i)=>{
     const d = document.createElement("div");
@@ -166,14 +191,21 @@ function startQuiz(){
     leftColumn.appendChild(d);
   });
 
-  res.forEach((r,i)=>{
-    const d = document.createElement("div");
-    d.className = "word";
-    d.textContent = r;
-    d.dataset.id = i;
-    d.onclick = ()=>{ selectRight(d); };
-    rightColumn.appendChild(d);
-  });
+res.forEach((q,i)=>{
+  const d = document.createElement("div");
+  d.className = "word";
+  d.dataset.id = i;
+
+  const img = document.createElement("img");
+  img.src = q.img;
+  img.alt = q.op;
+  img.style.width = "60px";
+
+  d.appendChild(img);
+  d.onclick = ()=>{ selectRight(d); };
+
+  rightColumn.appendChild(d);
+});
 
   resizeCanvas();
 }
@@ -225,7 +257,8 @@ function validateQuiz(){
     const rId = connections[i];
     if(rId === undefined){ l.classList.add("wrong"); return; }
     const r = rightColumn.children[rId];
-    if(r.textContent === q.res){
+const imgValue = r.querySelector("img").alt;
+if(imgValue === q.op){
       score++; l.classList.add("correct"); r.classList.add("correct");
     } else {
       l.classList.add("wrong"); r.classList.add("wrong");

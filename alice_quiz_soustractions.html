@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>➕ Mathématiques – Louise</title>
+    <title>➕ Mathématiques – Alice</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -103,8 +103,8 @@
 <!-- Bloc de navigation à gauche -->
 <div class="side-nav">
     <a href="index.html">🏠 Accueil</a>
-    <a href="louise.html">📝 Matières</a>
-    <a href="louise_mathematiques_sommaire.html">➕ Mathématiques</a>
+    <a href="alice.html">📝 Matières</a>
+    <a href="alice_mathematiques_sommaire.html">➕ Mathématiques</a>
 </div>
 
     <h1>➕ Mathématiques - Quiz additions</h1>
@@ -135,47 +135,43 @@ const toutesLesQuestions = [
 { question: "3 - 2 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
 { question: "4 - 1 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
 { question: "4 - 2 = ?", reponses: ["2","3","1"], bonneReponse: 0 },
-{ question: "4 - 3 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
+{ question: "4 - 3 = ?", reponses: ["1","2","3"], bonneReponse: 0 },
 { question: "5 - 1 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
 { question: "5 - 2 = ?", reponses: ["3","4","2"], bonneReponse: 0 },
 { question: "5 - 3 = ?", reponses: ["2","1","3"], bonneReponse: 0 },
 { question: "5 - 4 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
-
-{ question: "6 - 1 = ?", reponses: ["5","4","6"], bonneReponse: 0 },
+{ question: "6 - 1 = ?", reponses: ["5","4","3"], bonneReponse: 0 },
 { question: "6 - 2 = ?", reponses: ["4","5","3"], bonneReponse: 0 },
 { question: "6 - 3 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
 { question: "6 - 4 = ?", reponses: ["2","3","1"], bonneReponse: 0 },
 { question: "6 - 5 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
 { question: "7 - 1 = ?", reponses: ["6","5","7"], bonneReponse: 0 },
-{ question: "7 - 2 = ?", reponses: ["5","6","4"], bonneReponse: 0 },
+{ question: "7 - 2 = ?", reponses: ["5","6","7"], bonneReponse: 0 },
 { question: "7 - 3 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
 { question: "7 - 4 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
 { question: "7 - 5 = ?", reponses: ["2","3","1"], bonneReponse: 0 },
-
 { question: "8 - 1 = ?", reponses: ["7","6","8"], bonneReponse: 0 },
 { question: "8 - 2 = ?", reponses: ["6","7","5"], bonneReponse: 0 },
 { question: "8 - 3 = ?", reponses: ["5","4","6"], bonneReponse: 0 },
 { question: "8 - 4 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
-{ question: "8 - 5 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
+{ question: "8 - 5 = ?", reponses: ["3","2","1"], bonneReponse: 0 },
 { question: "8 - 6 = ?", reponses: ["2","3","1"], bonneReponse: 0 },
 { question: "8 - 7 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
 { question: "9 - 1 = ?", reponses: ["8","7","9"], bonneReponse: 0 },
 { question: "9 - 2 = ?", reponses: ["7","8","6"], bonneReponse: 0 },
 { question: "9 - 3 = ?", reponses: ["6","5","7"], bonneReponse: 0 },
-
 { question: "9 - 4 = ?", reponses: ["5","4","6"], bonneReponse: 0 },
 { question: "9 - 5 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
-{ question: "9 - 6 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
+{ question: "9 - 6 = ?", reponses: ["3","2","1"], bonneReponse: 0 },
 { question: "9 - 7 = ?", reponses: ["2","3","1"], bonneReponse: 0 },
 { question: "9 - 8 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
 { question: "10 - 1 = ?", reponses: ["9","8","10"], bonneReponse: 0 },
 { question: "10 - 2 = ?", reponses: ["8","9","7"], bonneReponse: 0 },
 { question: "10 - 3 = ?", reponses: ["7","6","8"], bonneReponse: 0 },
 { question: "10 - 4 = ?", reponses: ["6","5","7"], bonneReponse: 0 },
-{ question: "10 - 5 = ?", reponses: ["5","4","6"], bonneReponse: 0 },
-
+{ question: "10 - 5 = ?", reponses: ["5","7","6"], bonneReponse: 0 },
 { question: "10 - 6 = ?", reponses: ["4","5","3"], bonneReponse: 0 },
-{ question: "10 - 7 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
+{ question: "10 - 7 = ?", reponses: ["3","5","4"], bonneReponse: 0 },
 { question: "10 - 8 = ?", reponses: ["2","3","1"], bonneReponse: 0 },
 { question: "10 - 9 = ?", reponses: ["1","2","0"], bonneReponse: 0 },
 { question: "5 - 0 = ?", reponses: ["5","4","6"], bonneReponse: 0 },
@@ -184,7 +180,6 @@ const toutesLesQuestions = [
 { question: "8 - 0 = ?", reponses: ["8","7","9"], bonneReponse: 0 },
 { question: "9 - 0 = ?", reponses: ["9","8","10"], bonneReponse: 0 },
 { question: "10 - 0 = ?", reponses: ["10","9","8"], bonneReponse: 0 },
-
 { question: "4 - 0 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
 { question: "3 - 0 = ?", reponses: ["3","2","4"], bonneReponse: 0 },
 { question: "2 - 0 = ?", reponses: ["2","1","3"], bonneReponse: 0 },
@@ -195,7 +190,6 @@ const toutesLesQuestions = [
 { question: "9 - 4 = ?", reponses: ["5","6","4"], bonneReponse: 0 },
 { question: "10 - 5 = ?", reponses: ["5","4","6"], bonneReponse: 0 },
 { question: "5 - 1 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
-
 { question: "6 - 2 = ?", reponses: ["4","5","3"], bonneReponse: 0 },
 { question: "7 - 3 = ?", reponses: ["4","3","5"], bonneReponse: 0 },
 { question: "8 - 4 = ?", reponses: ["4","5","3"], bonneReponse: 0 },

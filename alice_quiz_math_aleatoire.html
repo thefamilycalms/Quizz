@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>➕ Mathématiques – Louise</title>
+    <title>➕ Mathématiques – Alice</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -103,8 +103,8 @@
 <!-- Bloc de navigation à gauche -->
 <div class="side-nav">
     <a href="index.html">🏠 Accueil</a>
-    <a href="louise.html">📝 Matières</a>
-    <a href="louise_mathematiques_sommaire.html">➕ Mathématiques</a>
+    <a href="alice.html">📝 Matières</a>
+    <a href="alice_mathematiques_sommaire.html">➕ Mathématiques</a>
 </div>
 
     <h1>➕ Mathématiques - Quiz additions</h1>
@@ -138,34 +138,24 @@ const toutesLesQuestions = [
 {question:"8 - 6 = ?", reponses:[2,3,4], bonne:0},
 {question:"7 + 1 = ?", reponses:[8,9,7], bonne:0},
 {question:"5 + 3 = ?", reponses:[7,9,8], bonne:2},
-{question:"12 - 4 = ?", reponses:[9,8,7], bonne:1},
 {question:"6 + 4 = ?", reponses:[11,10,9], bonne:1},
-
 {question:"9 + 1 = ?", reponses:[10,9,11], bonne:0},
-{question:"14 - 6 = ?", reponses:[7,8,9], bonne:1},
 {question:"2 + 6 = ?", reponses:[9,7,8], bonne:2},
-{question:"11 - 5 = ?", reponses:[6,7,5], bonne:0},
 {question:"3 + 7 = ?", reponses:[11,10,9], bonne:1},
 {question:"10 - 7 = ?", reponses:[4,3,5], bonne:1},
 {question:"5 + 5 = ?", reponses:[9,10,11], bonne:1},
 {question:"8 + 2 = ?", reponses:[10,9,11], bonne:0},
-{question:"13 - 8 = ?", reponses:[6,5,4], bonne:1},
 {question:"4 + 6 = ?", reponses:[11,9,10], bonne:2},
-
 {question:"7 - 2 = ?", reponses:[6,5,4], bonne:1},
 {question:"1 + 8 = ?", reponses:[9,8,10], bonne:0},
-{question:"15 - 5 = ?", reponses:[9,10,11], bonne:1},
 {question:"6 + 3 = ?", reponses:[9,8,10], bonne:0},
 {question:"9 - 4 = ?", reponses:[6,5,7], bonne:1},
 {question:"2 + 7 = ?", reponses:[8,9,10], bonne:1},
 {question:"10 - 6 = ?", reponses:[5,4,3], bonne:1},
 {question:"4 + 4 = ?", reponses:[7,8,9], bonne:1},
-{question:"11 - 3 = ?", reponses:[9,7,8], bonne:2},
 {question:"5 + 2 = ?", reponses:[8,6,7], bonne:2},
-
 {question:"8 - 3 = ?", reponses:[4,6,5], bonne:2},
 {question:"6 + 1 = ?", reponses:[7,6,8], bonne:0},
-{question:"12 - 2 = ?", reponses:[9,10,11], bonne:1},
 {question:"3 + 5 = ?", reponses:[9,8,7], bonne:1},
 {question:"9 - 1 = ?", reponses:[7,8,9], bonne:1},
 {question:"4 + 3 = ?", reponses:[6,7,8], bonne:1},
@@ -173,36 +163,27 @@ const toutesLesQuestions = [
 {question:"7 + 2 = ?", reponses:[10,8,9], bonne:2},
 {question:"6 - 1 = ?", reponses:[6,5,4], bonne:1},
 {question:"5 + 4 = ?", reponses:[8,9,10], bonne:1},
-
-{question:"14 - 4 = ?", reponses:[11,9,10], bonne:2},
 {question:"8 + 1 = ?", reponses:[9,8,10], bonne:0},
-{question:"11 - 6 = ?", reponses:[4,5,6], bonne:1},
 {question:"2 + 5 = ?", reponses:[7,6,8], bonne:0},
 {question:"9 - 2 = ?", reponses:[6,7,8], bonne:1},
 {question:"6 + 2 = ?", reponses:[8,7,9], bonne:0},
-{question:"13 - 3 = ?", reponses:[10,9,11], bonne:0},
 {question:"4 + 2 = ?", reponses:[5,6,7], bonne:1},
 {question:"7 - 5 = ?", reponses:[3,2,4], bonne:1},
 {question:"5 + 1 = ?", reponses:[6,5,7], bonne:0},
-
 {question:"10 - 1 = ?", reponses:[9,8,10], bonne:0},
 {question:"3 + 6 = ?", reponses:[8,9,10], bonne:1},
-{question:"12 - 7 = ?", reponses:[6,5,4], bonne:1},
 {question:"8 + 2 = ?", reponses:[11,10,9], bonne:1},
 {question:"6 - 4 = ?", reponses:[3,2,1], bonne:1},
 {question:"1 + 7 = ?", reponses:[9,8,7], bonne:1},
 {question:"9 - 3 = ?", reponses:[6,7,5], bonne:0},
 {question:"5 + 3 = ?", reponses:[9,7,8], bonne:2},
-{question:"11 - 2 = ?", reponses:[8,9,10], bonne:1},
 {question:"4 + 5 = ?", reponses:[9,8,10], bonne:0},
-
 {question:"8 - 1 = ?", reponses:[7,6,8], bonne:0},
 {question:"2 + 4 = ?", reponses:[7,6,5], bonne:1},
 {question:"10 - 5 = ?", reponses:[6,5,4], bonne:1},
 {question:"6 + 3 = ?", reponses:[8,9,10], bonne:1},
 {question:"7 - 3 = ?", reponses:[4,5,6], bonne:0},
 {question:"1 + 5 = ?", reponses:[7,6,5], bonne:1},
-{question:"12 - 6 = ?", reponses:[7,6,5], bonne:1},
 {question:"3 + 4 = ?", reponses:[8,7,6], bonne:1},
 {question:"9 - 7 = ?", reponses:[3,2,1], bonne:1},
 {question:"5 + 2 = ?", reponses:[7,6,8], bonne:0}
